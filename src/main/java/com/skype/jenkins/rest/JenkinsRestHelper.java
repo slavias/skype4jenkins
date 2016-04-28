@@ -6,9 +6,12 @@ import java.util.List;
 import com.skype.jenkins.JsonUtil;
 import com.skype.jenkins.dto.JenkinsJobDTO;
 import com.skype.jenkins.dto.JobResultEnum;
+import com.skype.jenkins.logger.Logger;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 public class JenkinsRestHelper extends RestHelper {
     
@@ -23,7 +26,7 @@ public class JenkinsRestHelper extends RestHelper {
     }
     
     public JenkinsJobDTO getJenkinsJobInfo(String jobName, String buildNumber){
-        String url = prepareUrl(jobName, buildNumber, true);
+        String url = prepareUrl(jobName, buildNumber, "info");
         JenkinsJobDTO jj = JsonUtil.fromJson(sendAndGetResponse(url, HttpMethod.GET, getHttpEntityWithHeaders(), HttpStatus.OK).getBody(), JenkinsJobDTO.class);
         if (jj.isBuilding()) {
             jj.setResult(JobResultEnum.IN_PROGRESS) ;
@@ -34,13 +37,24 @@ public class JenkinsRestHelper extends RestHelper {
     
     public List<String> getJenkinsJobConsole(String jobName){
         String buildNumber=null;
-        String url = prepareUrl(jobName, buildNumber, false);
+        String url = prepareUrl(jobName, buildNumber, "console");
         String jjc = sendAndGetResponse(url, HttpMethod.GET, getHttpEntityWithHeaders(), HttpStatus.OK).getBody();
         return Arrays.asList(jjc.split("\\n"));
         
     }
+    public String getJenkinsJobThucydides(String jobName) {
+        String url = prepareUrl(jobName, null, "thucydides");
+        String jt = "";
+        try {
+            jt = send(getUriFromString(url), HttpMethod.GET, getHttpEntityWithHeaders()).getBody();
+        } catch (final HttpClientErrorException | HttpServerErrorException e) {
+            Logger.out.error(e);
+        }
+        return jt;
+    }
+    
 
-    private String prepareUrl(String jobName, String buildNumber, boolean isInfo) {
+    public String prepareUrl(String jobName, String buildNumber, String type) {
         if (null == buildNumber){
             buildNumber="lastBuild";
         }
@@ -49,7 +63,11 @@ public class JenkinsRestHelper extends RestHelper {
         url.append("/job/");
         url.append(jobName);
         url.append("/lastBuild/");
-        url.append(isInfo ? "api/json" : "consoleText");
+        switch (type){
+        case "info":url.append("api/json");break;
+        case "console":url.append("consoleText");break;
+        case "thucydides":url.append("thucydidesReport");break;
+        }
         return url.toString();
     }
     

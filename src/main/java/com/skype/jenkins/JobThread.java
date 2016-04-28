@@ -13,6 +13,10 @@ import com.skype.jenkins.dto.JobResultEnum;
 import com.skype.jenkins.logger.Logger;
 import com.skype.jenkins.rest.JenkinsRestHelper;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
 public class JobThread implements Runnable{
 
     private final JenkinsRestHelper jenkins;
@@ -37,14 +41,21 @@ public class JobThread implements Runnable{
                 if (!currentStatus.isEmpty()) {
                     NotifyHelper notifyHelper = new NotifyHelper(jobConfig, currentStatus, jobInfo, jobConsole);
                     for (NotifyDTO notifier : jobConfig.getNotify()) {
+                        String jobMessage = null;
                         switch (notifier.getType()) {
                         case statusOfEachBuild:
                             Logger.out.info("statusOfEachBuild ");
-                            sendSkype(notifyHelper.executeStatusOfEachBuild(notifier),jobConfig.getInfo().getChatId());
+                            jobMessage = notifyHelper.executeStatusOfEachBuild(notifier);
+                            if (!jobMessage.isEmpty()){
+                                sendSkype(jobMessage + jobInfo.getUrl() + "\n" + getThucydidesReport(jobInfo),jobConfig.getInfo().getChatId());
+                            }
                             break;
                         case buildStatusChanged:
                             Logger.out.info("buildStatusChanged ");
-                            sendSkype(notifyHelper.executeBuildStatusChanged(notifier),jobConfig.getInfo().getChatId());
+                            jobMessage = notifyHelper.executeBuildStatusChanged(notifier);
+                            if (!jobMessage.isEmpty()){
+                                sendSkype(jobMessage + jobInfo.getUrl() + "\n" + getThucydidesReport(jobInfo),jobConfig.getInfo().getChatId());
+                            }
                             break;
                         case buildStillRed:
                             Logger.out.info("buildStillRed ");
@@ -74,9 +85,6 @@ public class JobThread implements Runnable{
     }
     
     private void sendSkype(String message, String chatName) {
-        if ("".equals(message)) {
-            return;
-        }
         GroupChat groupChat = (GroupChat) SkypeHelper.getChat(chatName);
         try {
             groupChat.sendMessage(message);
@@ -84,6 +92,24 @@ public class JobThread implements Runnable{
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+    
+    private String getThucydidesReport(JenkinsJobDTO jobInfo) {
+        StringBuilder thucydidesResult = new StringBuilder("");
+        if (JobResultEnum.SUCCESS.equals(jobInfo.getResult()) || JobResultEnum.UNSTABLE.equals(jobInfo.getResult())){
+            String report = jenkins.getJenkinsJobThucydides(jobConfig.getInfo().getName());
+            if (report.isEmpty()){
+                return "";
+            } else {
+                thucydidesResult.append("Serenity Result\n");
+            }
+            Document doc = Jsoup.parse(report);
+            Elements summary = doc.select(".summary-leading-column").get(0).parents();
+            thucydidesResult.append("test passed: ").append(summary.select("td").get(2).text()).append("\n");
+            thucydidesResult.append("test failed: ").append(summary.select("td").get(3).text()).append("\n");
+            thucydidesResult.append("report Url: ").append(jenkins.prepareUrl(jobConfig.getInfo().getName(), null, "thucydides")).append("\n");
+        }
+        return thucydidesResult.toString();
     }
 
 }

@@ -20,6 +20,9 @@ import com.skype.jenkins.dto.JobResultEnum;
 import com.skype.jenkins.dto.ParametersDTO;
 import com.skype.jenkins.logger.Logger;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
 public class NotifyHelper {
     
     private final ConfigJobDTO jobConfig;
