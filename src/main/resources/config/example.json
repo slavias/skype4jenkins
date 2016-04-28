@@ -1,0 +1,224 @@
+{
+	"jenkinsUrl": "jenkins.marks.kyiv.epam.com",
+	"jobs":[
+			{
+			"info":{
+				"name": "POS-QA-Smoke",
+				"jobName": "08.2.3_run_test_suite_smoke_CI",
+				"timeout":10,
+				"chatId": "19:ddd3efae2f054251a58c1bc1ed935e41@thread.skype"
+				
+			},
+			"defaultParameters": [
+				{
+				"name": "PARALLEL_CONFIG_FILE",
+				"message": "Parallel Config file is %s"
+				},
+				{
+				"name": "GLOBAL_CONFIG_FILE",
+				"message": "Global Config file is %s"
+				}
+			],
+			"notify":[
+				{
+					"type": "statusOfEachBuild",
+					"status":[
+						{
+							"type": "SUCCESS",
+							"message": "(rock) - smoke tests completed.",
+							"lineFromLog" : "Started by user"
+						},
+						{
+							"type": "FAILURE",
+							"message": "(swear) - something went wrong with smoke tests.",
+							"lineFromLog" : "Started by user"
+						},
+						{
+							"type": "UNSTABLE",
+							"message": "(angry) - smoke tests completed, some subjob failed.",
+							"lineFromLog" : "Started by user"
+						},
+						{
+							"type": "ABORTED",
+							"message": "(sarcastic) - pssst I think someone {0} smoke tests.",
+							"lineFromLog" : "Aborted"
+						},
+						{
+							"type": "IN_PROGRESS",
+							"message": "(penguin) - smoke test started.",
+							"lineFromLog" : "Started by user"
+						}
+					]
+				}
+			]
+		},
+		{
+			"info":{
+				"name": "POS-QA-e2e",
+				"jobName": "08.2.2_run_test_suite",
+				"timeout":10,
+				"chatId": "19:ddd3efae2f054251a58c1bc1ed935e41@thread.skype"
+			},
+			"defaultParameters": [
+				{
+				"name": "PARALLEL_CONFIG_FILE",
+				"message": "Parallel Config file is %s"
+				},
+				{
+				"name": "GLOBAL_CONFIG_FILE",
+				"message": "Global Config file is %s"
+				}
+			],
+			"notify":[
+				{
+					"type": "statusOfEachBuild",
+					"status":[
+						{
+							"type": "SUCCESS",
+							"message": "(rock) - E2E tests completed.",
+							"lineFromLog" : "Started by user"
+						},
+						{
+							"type": "FAILURE",
+							"message": "(swear) - something went wrong with E2E tests.",
+							"lineFromLog" : "Started by user"
+						},
+						{
+							"type": "UNSTABLE",
+							"message": "(angry) - E2E tests completed, some subjob failed.",
+							"lineFromLog" : "Started by user"
+						},
+						{
+							"type": "ABORTED",
+							"message": "(sarcastic) - pssst I think someone {0} E2E tests.",
+							"lineFromLog" : "Aborted"
+						},
+						{
+							"type": "IN_PROGRESS",
+							"message": "(penguin) - E2E test started.",
+							"lineFromLog" : "Started by user"
+						}
+					]
+				}
+			]
+		},
+		{
+			"info":{
+				"name": "Deploy-env",
+				"jobName": "08.2.AUTO_Deploy2Env",
+				"timeout":10,
+				"chatId": "19:ddd3efae2f054251a58c1bc1ed935e41@thread.skype"
+			},
+			"notify":[
+				{
+					"type": "statusOfEachBuild",
+					"status":[
+						{
+							"type": "SUCCESS",
+							"message": "(*)",
+							"lineFromLog" : "Started by user",
+							"parameters": [
+								{
+								"name": "ENV",
+								"message": "Deploy on %s Env completed"
+								}
+							]	
+						},
+						{
+							"type": "FAILURE",
+							"message": "(*)",
+							"lineFromLog" : "Started by user",
+							"parameters": [
+								{
+								"name": "ENV",
+								"message": "Deploy on %s Env failed"
+								}
+							]	
+						},
+						{
+							"type": "ABORTED",
+							"message": "(*)",
+							"lineFromLog" : "Aborted",
+							"parameters": [
+								{
+								"name": "ENV",
+								"message": "Deploy on %s Env aborted"
+								}
+							]	
+						},
+						{
+							"type": "IN_PROGRESS",
+							"message": "(*)",
+							"lineFromLog" : "Started by user",
+							"parameters": [
+								{
+								"name": "ENV",
+								"message": "Started deploy on %s Env"
+								}
+							]	
+						}
+					]
+				}
+			]
+		},
+		{
+			"info":{
+				"name": "Deploy-env-2",
+				"jobName": "08.2.AUTO_Deploy2Env_parallel",
+				"timeout":10,
+				"chatId": "19:ddd3efae2f054251a58c1bc1ed935e41@thread.skype"
+			},
+			"notify":[
+				{
+					"type": "statusOfEachBuild",
+					"status":[
+						{
+							"type": "SUCCESS",
+							"message": "(*)",
+							"lineFromLog" : "Started by user",
+							"parameters": [
+								{
+								"name": "ENV",
+								"message": "Deploy on %s Env completed"
+								}
+							]	
+						},
+						{
+							"type": "FAILURE",
+							"message": "(*)",
+							"lineFromLog" : "Started by user",
+							"parameters": [
+								{
+								"name": "ENV",
+								"message": "Deploy on %s Env failed"
+								}
+							]	
+						},
+						{
+							"type": "ABORTED",
+							"message": "(*)",
+							"lineFromLog" : "Aborted",
+							"parameters": [
+								{
+								"name": "ENV",
+								"message": "Deploy on %s Env aborted"
+								}
+							]	
+						},
+						{
+							"type": "IN_PROGRESS",
+							"message": "(*)",
+							"lineFromLog" : "Started by user",
+							"parameters": [
+								{
+								"name": "ENV",
+								"message": "Started deploy on %s Env"
+								}
+							]	
+						}
+					]
+				}
+			]
+		}
+	]
+}

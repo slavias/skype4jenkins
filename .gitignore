@@ -1,0 +1,8 @@
+/target
+credentials
+/src/main/config
+!/src/main/config/example.json
+.classpath
+.project
+.settings
+/reports
