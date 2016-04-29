@@ -27,14 +27,21 @@ public class NotifyHelper {
     
     private final ConfigJobDTO jobConfig;
     private final List<JobResultEnum> currentStatus;
-    private final JenkinsJobDTO jobDTO;
-    private final List<String> consoleLog;
+    private JenkinsJobDTO jobDTO;
+    private List<String> consoleLog;
     
-    public NotifyHelper(ConfigJobDTO jobConfig, List<JobResultEnum> currentStatus, JenkinsJobDTO jobDTO, List<String> consoleLog) {
+    public NotifyHelper(ConfigJobDTO jobConfig, List<JobResultEnum> currentStatus) {
         this.jobConfig = jobConfig;
         this.currentStatus = currentStatus;
+        this.jobDTO = null;
+        this.consoleLog = null;
+        
+    }
+    
+    public NotifyHelper updateJenkinsResponce(JenkinsJobDTO jobDTO, List<String> consoleLog) {
         this.jobDTO = jobDTO;
         this.consoleLog = consoleLog;
+        return this;
     }
     
     private List<JobResultEnum> getCurrentStatusIgnored(JobResultEnum... ignoredStatus){

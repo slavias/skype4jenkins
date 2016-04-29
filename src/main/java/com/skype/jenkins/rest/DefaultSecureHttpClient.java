@@ -26,7 +26,7 @@ public final class DefaultSecureHttpClient {
     private DefaultSecureHttpClient() {
     }
 
-    public static HttpClient getSecureClient() {
+    public static synchronized HttpClient getSecureClient() {
         if (secureHttpClient == null) {
             createDefaultSSLClient();
             Logger.out.info("New rest client created (ignore certs, TLS)");

@@ -31,15 +31,19 @@ public class JobThread implements Runnable{
     
     @Override
     public void run() {
-        Logger.out.info("thread start");
         Thread.currentThread().setName(jobConfig.getInfo().getName());
+        Logger.out.info("thread start");
+        NotifyHelper notifyHelper;
+        JenkinsJobDTO jobInfo;
+        List<String> jobConsole;
+        notifyHelper = new NotifyHelper(jobConfig, currentStatus);
         while(!Thread.currentThread().isInterrupted()){
             try {
                 Logger.out.info("---triggered---");
-                JenkinsJobDTO jobInfo = jenkins.getJenkinsJobInfo(jobConfig.getInfo().getJobName());
-                List<String> jobConsole = jenkins.getJenkinsJobConsole(jobConfig.getInfo().getJobName());
+                jobInfo = jenkins.getJenkinsJobInfo(jobConfig.getInfo().getJobName());
+                jobConsole = jenkins.getJenkinsJobConsole(jobConfig.getInfo().getJobName());
+                notifyHelper.updateJenkinsResponce(jobInfo, jobConsole);
                 if (!currentStatus.isEmpty()) {
-                    NotifyHelper notifyHelper = new NotifyHelper(jobConfig, currentStatus, jobInfo, jobConsole);
                     for (NotifyDTO notifier : jobConfig.getNotify()) {
                         String jobMessage = null;
                         switch (notifier.getType()) {
@@ -97,7 +101,7 @@ public class JobThread implements Runnable{
     private String getThucydidesReport(JenkinsJobDTO jobInfo) {
         StringBuilder thucydidesResult = new StringBuilder("");
         if (JobResultEnum.SUCCESS.equals(jobInfo.getResult()) || JobResultEnum.UNSTABLE.equals(jobInfo.getResult())){
-            String report = jenkins.getJenkinsJobThucydides(jobConfig.getInfo().getName());
+            String report = jenkins.getJenkinsJobThucydides(jobConfig.getInfo().getJobName());
             if (report.isEmpty()){
                 return "";
             } else {

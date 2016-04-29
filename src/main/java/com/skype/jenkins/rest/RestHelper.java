@@ -29,7 +29,7 @@ public class RestHelper {
     protected RestHelper() {
     }
 
-    protected static RestTemplate getRestTemplate() {
+    protected static synchronized RestTemplate getRestTemplate() {
         if (null == restTemplate) {
             restTemplate = new RestTemplate();
             restTemplate.setRequestFactory(createHttpClientFactory());
@@ -37,14 +37,14 @@ public class RestHelper {
         return restTemplate;
     }
 
-    private static ClientHttpRequestFactory createHttpClientFactory() {
+    private static synchronized ClientHttpRequestFactory createHttpClientFactory() {
         int timeout = 60 * 1000;
         HttpComponentsClientHttpRequestFactory clientFactory = new HttpComponentsClientHttpRequestFactory(
                 DefaultSecureHttpClient.getSecureClient());
         return clientFactory;
     }
     
-    protected static HttpHeaders getHeadersWithJson() {
+    protected static synchronized HttpHeaders getHeadersWithJson() {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -69,11 +69,11 @@ public class RestHelper {
         return UriComponentsBuilder.fromHttpUrl(uri).queryParams(mvm).build().toUri();
     }
     
-    protected static ResponseEntity<String> send(final URI uri, final HttpMethod httpMethod, final HttpEntity<?> entity) {
+    protected static synchronized ResponseEntity<String> send(final URI uri, final HttpMethod httpMethod, final HttpEntity<?> entity) {
         return getRestTemplate().exchange(uri, httpMethod, entity, String.class);
     }
 
-    protected static ResponseEntity<String> sendAndGetResponse(final URI uri, final HttpMethod httpMethod,
+    protected static synchronized ResponseEntity<String> sendAndGetResponse(final URI uri, final HttpMethod httpMethod,
             final HttpEntity<?> entity, final HttpStatus code) {
         ResponseEntity<String> response = null;
         try {
@@ -84,7 +84,7 @@ public class RestHelper {
         return response;
     }
 
-    protected static ResponseEntity<String> sendAndGetResponse(final String uri, final HttpMethod httpMethod,
+    protected static synchronized ResponseEntity<String> sendAndGetResponse(final String uri, final HttpMethod httpMethod,
             final HttpEntity<?> entity, final HttpStatus code) {
         return sendAndGetResponse(getUriFromString(uri), httpMethod, entity, code);
     }

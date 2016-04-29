@@ -15,6 +15,8 @@ import com.samczsun.skype4j.exceptions.ChatNotFoundException;
 import com.samczsun.skype4j.exceptions.ConnectionException;
 import com.samczsun.skype4j.internal.StreamUtils;
 
+import org.springframework.core.io.ClassPathResource;
+
 public class SkypeHelper {
 
     private static Skype skype;
