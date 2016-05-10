@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.samczsun.skype4j.chat.GroupChat;
-import com.samczsun.skype4j.exceptions.ChatNotFoundException;
 import com.samczsun.skype4j.exceptions.ConnectionException;
 import com.skype.jenkins.dto.ConfigJobDTO;
 import com.skype.jenkins.dto.ConfigJobDTO.NotifyDTO;
@@ -23,10 +22,15 @@ public class JobThread implements Runnable{
     private final ConfigJobDTO jobConfig;
     private List<JobResultEnum> currentStatus;
     
+    private NotifyHelper notifyHelper;
+    private JenkinsJobDTO jobInfo;
+    private List<String> jobConsole;
+    
     public JobThread(ConfigJobDTO jobConfig, String jenkinsUrl) {
         this.jobConfig = jobConfig;
         jenkins = new JenkinsRestHelper(jenkinsUrl);
         currentStatus = new ArrayList<>();
+        notifyHelper = new NotifyHelper(jobConfig, currentStatus);
     }
     
     public ConfigJobDTO getJobConfig() {
@@ -36,11 +40,8 @@ public class JobThread implements Runnable{
     @Override
     public void run() {
         Thread.currentThread().setName(jobConfig.getInfo().getName());
-        //Logger.out.info("thread start");
-        NotifyHelper notifyHelper;
-        JenkinsJobDTO jobInfo;
-        List<String> jobConsole;
-        notifyHelper = new NotifyHelper(jobConfig, currentStatus);
+        Logger.out.info("thread start");
+        
         Logger.out.info("---triggered---");
         jobInfo = jenkins.getJenkinsJobInfo(jobConfig.getInfo().getJobName());
         jobConsole = jenkins.getJenkinsJobConsole(jobConfig.getInfo().getJobName());
@@ -80,7 +81,7 @@ public class JobThread implements Runnable{
         if (currentStatus.isEmpty() || !currentStatus.get(currentStatus.size() - 1).equals(jobInfo.getResult())) {
             currentStatus.add(jobInfo.getResult());
         }
-        //Logger.out.info("thread ended");
+        Logger.out.info("thread ended");
     }
     
     private void sendSkype(String message, String chatName) {

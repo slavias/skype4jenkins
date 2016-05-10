@@ -38,7 +38,6 @@ public class RestHelper {
     }
 
     private static synchronized ClientHttpRequestFactory createHttpClientFactory() {
-        int timeout = 60 * 1000;
         HttpComponentsClientHttpRequestFactory clientFactory = new HttpComponentsClientHttpRequestFactory(
                 DefaultSecureHttpClient.getSecureClient());
         return clientFactory;

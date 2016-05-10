@@ -32,7 +32,7 @@ public class RunNotification {
                 jobs.add(new JobThread(jobConfig, cj.getJenkinsUrl()));
             }
         });
-        ScheduledExecutorService  service = Executors.newScheduledThreadPool(jobs.size());
+        ScheduledExecutorService  service = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
         jobs.forEach(job -> service.scheduleAtFixedRate(job, 1, job.getJobConfig().getInfo().getTimeout(), TimeUnit.SECONDS));
         
         //service.shutdownNow();

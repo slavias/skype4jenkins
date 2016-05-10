@@ -7,12 +7,10 @@ import com.google.gson.GsonBuilder;
 
 public final class JsonUtil {
 
-    private static final int TAB_WIDTH = 4;
     private static final String EQUALS = "\\u003d";
 
     private static Gson gsonWithNulls = new GsonBuilder().serializeNulls().create();
     private static Gson gson = new GsonBuilder().create();
-    private static String eol = System.getProperty("line.separator");
 
     private JsonUtil() {
     }
