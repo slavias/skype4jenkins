@@ -4,12 +4,13 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-import com.samczsun.skype4j.Skype;
 import com.skype.jenkins.dto.ConfigDTO;
 import com.skype.jenkins.dto.ConfigJobDTO;
 import com.skype.jenkins.logger.Logger;
@@ -24,13 +25,16 @@ public class RunNotification {
         }
         //Init and login to skype
         SkypeHelper.getSkype();
-        ExecutorService service = Executors.newCachedThreadPool();
+        List<JobThread> jobs = new ArrayList<>();
         Arrays.asList(configFiles.split(",")).forEach(file -> {
             ConfigDTO cj = parseConfigFile(file.trim());
             for (ConfigJobDTO jobConfig : cj.getJobs()) {
-                service.submit(new JobThread(jobConfig, cj.getJenkinsUrl()));
+                jobs.add(new JobThread(jobConfig, cj.getJenkinsUrl()));
             }
         });
+        ScheduledExecutorService  service = Executors.newScheduledThreadPool(jobs.size());
+        jobs.forEach(job -> service.scheduleAtFixedRate(job, 1, job.getJobConfig().getInfo().getTimeout(), TimeUnit.SECONDS));
+        
         //service.shutdownNow();
         
     }

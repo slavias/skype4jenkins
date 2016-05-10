@@ -1,12 +1,12 @@
 {
-	"jenkinsUrl": "jenkins.marks.kyiv.epam.com",
+	"jenkinsUrl": "jenkins url with port",
 	"jobs":[
 			{
 			"info":{
 				"name": "POS-QA-Smoke",
 				"jobName": "08.2.3_run_test_suite_smoke_CI",
 				"timeout":10,
-				"chatId": "19:ddd3efae2f054251a58c1bc1ed935e41@thread.skype"
+				"chatId": "/get name"
 				
 			},
 			"defaultParameters": [
@@ -57,7 +57,7 @@
 				"name": "POS-QA-e2e",
 				"jobName": "08.2.2_run_test_suite",
 				"timeout":10,
-				"chatId": "19:ddd3efae2f054251a58c1bc1ed935e41@thread.skype"
+				"chatId": "/get name"
 			},
 			"defaultParameters": [
 				{
@@ -107,7 +107,7 @@
 				"name": "Deploy-env",
 				"jobName": "08.2.AUTO_Deploy2Env",
 				"timeout":10,
-				"chatId": "19:ddd3efae2f054251a58c1bc1ed935e41@thread.skype"
+				"chatId": "/get name"
 			},
 			"notify":[
 				{
@@ -166,7 +166,7 @@
 				"name": "Deploy-env-2",
 				"jobName": "08.2.AUTO_Deploy2Env_parallel",
 				"timeout":10,
-				"chatId": "19:ddd3efae2f054251a58c1bc1ed935e41@thread.skype"
+				"chatId": "/get name"
 			},
 			"notify":[
 				{

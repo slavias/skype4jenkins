@@ -29,63 +29,58 @@ public class JobThread implements Runnable{
         currentStatus = new ArrayList<>();
     }
     
+    public ConfigJobDTO getJobConfig() {
+        return jobConfig;
+    }
+
     @Override
     public void run() {
         Thread.currentThread().setName(jobConfig.getInfo().getName());
-        Logger.out.info("thread start");
+        //Logger.out.info("thread start");
         NotifyHelper notifyHelper;
         JenkinsJobDTO jobInfo;
         List<String> jobConsole;
         notifyHelper = new NotifyHelper(jobConfig, currentStatus);
-        while(!Thread.currentThread().isInterrupted()){
-            try {
-                Logger.out.info("---triggered---");
-                jobInfo = jenkins.getJenkinsJobInfo(jobConfig.getInfo().getJobName());
-                jobConsole = jenkins.getJenkinsJobConsole(jobConfig.getInfo().getJobName());
-                notifyHelper.updateJenkinsResponce(jobInfo, jobConsole);
-                if (!currentStatus.isEmpty()) {
-                    for (NotifyDTO notifier : jobConfig.getNotify()) {
-                        String jobMessage = null;
-                        switch (notifier.getType()) {
-                        case statusOfEachBuild:
-                            //Logger.out.info("statusOfEachBuild ");
-                            jobMessage = notifyHelper.executeStatusOfEachBuild(notifier);
-                            if (!jobMessage.isEmpty()){
-                                sendSkype(jobMessage + jobInfo.getUrl() + "\n" + getThucydidesReport(jobInfo),jobConfig.getInfo().getChatId());
-                            }
-                            break;
-                        case buildStatusChanged:
-                            //Logger.out.info("buildStatusChanged ");
-                            jobMessage = notifyHelper.executeBuildStatusChanged(notifier);
-                            if (!jobMessage.isEmpty()){
-                                sendSkype(jobMessage + jobInfo.getUrl() + "\n" + getThucydidesReport(jobInfo),jobConfig.getInfo().getChatId());
-                            }
-                            break;
-                        case buildStillRed:
-                            //Logger.out.info("buildStillRed ");
-                            sendSkype(notifyHelper.executeBuildStillRed(notifier),jobConfig.getInfo().getChatId());
-                            break;
-                        case buildFrozen:
-                            //notifyHelper.executeBuildFrozen(notifier);
-                            break;
-                        case dailyReport:
-                            //notifyHelper.executeDailyReport(notifier);
-                            break;
-                        }
-
+        Logger.out.info("---triggered---");
+        jobInfo = jenkins.getJenkinsJobInfo(jobConfig.getInfo().getJobName());
+        jobConsole = jenkins.getJenkinsJobConsole(jobConfig.getInfo().getJobName());
+        notifyHelper.updateJenkinsResponce(jobInfo, jobConsole);
+        if (!currentStatus.isEmpty()) {
+            for (NotifyDTO notifier : jobConfig.getNotify()) {
+                String jobMessage = null;
+                switch (notifier.getType()) {
+                case statusOfEachBuild:
+                    // Logger.out.info("statusOfEachBuild ");
+                    jobMessage = notifyHelper.executeStatusOfEachBuild(notifier);
+                    if (!jobMessage.isEmpty()) {
+                        sendSkype(jobMessage + jobInfo.getUrl() + "\n" + getThucydidesReport(jobInfo), jobConfig.getInfo().getChatId());
                     }
+                    break;
+                case buildStatusChanged:
+                    // Logger.out.info("buildStatusChanged ");
+                    jobMessage = notifyHelper.executeBuildStatusChanged(notifier);
+                    if (!jobMessage.isEmpty()) {
+                        sendSkype(jobMessage + jobInfo.getUrl() + "\n" + getThucydidesReport(jobInfo), jobConfig.getInfo().getChatId());
+                    }
+                    break;
+                case buildStillRed:
+                    // Logger.out.info("buildStillRed ");
+                    sendSkype(notifyHelper.executeBuildStillRed(notifier), jobConfig.getInfo().getChatId());
+                    break;
+                case buildFrozen:
+                    // notifyHelper.executeBuildFrozen(notifier);
+                    break;
+                case dailyReport:
+                    // notifyHelper.executeDailyReport(notifier);
+                    break;
                 }
-                if (currentStatus.isEmpty() || !currentStatus.get(currentStatus.size()-1).equals(jobInfo.getResult())){
-                    currentStatus.add(jobInfo.getResult());
-                }
-                Thread.sleep(jobConfig.getInfo().getTimeout() * 1000);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+
             }
-            
         }
-        Logger.out.info("thread ended");
+        if (currentStatus.isEmpty() || !currentStatus.get(currentStatus.size() - 1).equals(jobInfo.getResult())) {
+            currentStatus.add(jobInfo.getResult());
+        }
+        //Logger.out.info("thread ended");
     }
     
     private void sendSkype(String message, String chatName) {
