@@ -54,19 +54,19 @@ public class JobThread implements Runnable{
                     // Logger.out.info("statusOfEachBuild ");
                     jobMessage = notifyHelper.executeStatusOfEachBuild(notifier);
                     if (!jobMessage.isEmpty()) {
-                        sendSkype(jobMessage + jobInfo.getUrl() + "\n" + getThucydidesReport(jobInfo), jobConfig.getInfo().getChatId());
+                        SkypeHelper.sendSkype(jobMessage + jobInfo.getUrl() + "\n" + notifyHelper.getThucydidesReport(jenkins), jobConfig.getInfo().getChatId());
                     }
                     break;
                 case buildStatusChanged:
                     // Logger.out.info("buildStatusChanged ");
                     jobMessage = notifyHelper.executeBuildStatusChanged(notifier);
                     if (!jobMessage.isEmpty()) {
-                        sendSkype(jobMessage + jobInfo.getUrl() + "\n" + getThucydidesReport(jobInfo), jobConfig.getInfo().getChatId());
+                        SkypeHelper.sendSkype(jobMessage + jobInfo.getUrl() + "\n" + notifyHelper.getThucydidesReport(jenkins), jobConfig.getInfo().getChatId());
                     }
                     break;
                 case buildStillRed:
                     // Logger.out.info("buildStillRed ");
-                    sendSkype(notifyHelper.executeBuildStillRed(notifier), jobConfig.getInfo().getChatId());
+                    SkypeHelper.sendSkype(notifyHelper.executeBuildStillRed(notifier), jobConfig.getInfo().getChatId());
                     break;
                 case buildFrozen:
                     // notifyHelper.executeBuildFrozen(notifier);
@@ -82,34 +82,6 @@ public class JobThread implements Runnable{
             currentStatus.add(jobInfo.getResult());
         }
         Logger.out.info("thread ended");
-    }
-    
-    private void sendSkype(String message, String chatName) {
-        GroupChat groupChat = SkypeHelper.getChat(chatName);
-        try {
-            groupChat.sendMessage(message);
-        } catch (ConnectionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-    
-    private String getThucydidesReport(JenkinsJobDTO jobInfo) {
-        StringBuilder thucydidesResult = new StringBuilder("");
-        if (JobResultEnum.SUCCESS.equals(jobInfo.getResult()) || JobResultEnum.UNSTABLE.equals(jobInfo.getResult())){
-            String report = jenkins.getJenkinsJobThucydides(jobConfig.getInfo().getJobName(), String.valueOf(jobInfo.getNumber()));
-            if (report.isEmpty()){
-                return "";
-            } else {
-                thucydidesResult.append("Serenity Result\n");
-            }
-            Document doc = Jsoup.parse(report);
-            Elements summary = doc.select(".summary-leading-column").get(0).parents();
-            thucydidesResult.append("test passed: ").append(summary.select("td").get(2).text()).append("\n");
-            thucydidesResult.append("test failed: ").append(summary.select("td").get(3).text()).append("\n");
-            thucydidesResult.append("report Url: ").append(jenkins.prepareUrl(jobConfig.getInfo().getJobName(), null, "thucydides")).append("\n");
-        }
-        return thucydidesResult.toString();
     }
 
 }

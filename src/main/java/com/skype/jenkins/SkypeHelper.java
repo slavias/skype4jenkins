@@ -116,5 +116,15 @@ public class SkypeHelper {
         }
         return chatMap.get(chatName);
     }
+    
+    public static void sendSkype(String message, String chatName) {
+        GroupChat groupChat = getChat(chatName);
+        try {
+            groupChat.sendMessage(message);
+        } catch (ConnectionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
 }

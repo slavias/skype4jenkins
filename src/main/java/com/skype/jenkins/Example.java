@@ -26,7 +26,9 @@ import com.samczsun.skype4j.formatting.Message;
 import com.samczsun.skype4j.internal.Endpoints;
 import com.samczsun.skype4j.internal.SkypeImpl;
 import com.samczsun.skype4j.internal.StreamUtils;
-
+/**
+ * Skype example
+ */
 public class Example {
     public static void main(String[] args) throws Exception {
         try {
