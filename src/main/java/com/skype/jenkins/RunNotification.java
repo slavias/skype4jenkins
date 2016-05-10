@@ -22,10 +22,11 @@ public class RunNotification {
         if (null == configFiles || configFiles.isEmpty()){
             configFiles="config/example.json";
         }
+        //Init and login to skype
+        SkypeHelper.getSkype();
         ExecutorService service = Executors.newCachedThreadPool();
         Arrays.asList(configFiles.split(",")).forEach(file -> {
             ConfigDTO cj = parseConfigFile(file.trim());
-            Skype skype = SkypeHelper.getSkype();
             for (ConfigJobDTO jobConfig : cj.getJobs()) {
                 service.submit(new JobThread(jobConfig, cj.getJenkinsUrl()));
             }

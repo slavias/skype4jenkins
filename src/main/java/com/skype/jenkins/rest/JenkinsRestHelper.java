@@ -42,8 +42,8 @@ public class JenkinsRestHelper extends RestHelper {
         return Arrays.asList(jjc.split("\\n"));
         
     }
-    public String getJenkinsJobThucydides(String jobName) {
-        String url = prepareUrl(jobName, null, "thucydides");
+    public String getJenkinsJobThucydides(String jobName, String buildNumber) {
+        String url = prepareUrl(jobName, buildNumber, "thucydides");
         String jt = "";
         try {
             jt = send(getUriFromString(url), HttpMethod.GET, getHttpEntityWithHeaders()).getBody();
@@ -62,8 +62,8 @@ public class JenkinsRestHelper extends RestHelper {
         StringBuilder url = new StringBuilder("http://" + jenkinsUrl);
         url.append("/job/");
         url.append(jobName);
-        url.append("/lastBuild/");
-        switch (type){
+        url.append("/" + buildNumber + "/");
+        switch (type) {
         case "info":url.append("api/json");break;
         case "console":url.append("consoleText");break;
         case "thucydides":url.append("thucydidesReport");break;
