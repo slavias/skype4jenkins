@@ -1,17 +1,10 @@
 package com.skype.jenkins;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.samczsun.skype4j.exceptions.ChatNotFoundException;
-import com.samczsun.skype4j.exceptions.ConnectionException;
-import com.samczsun.skype4j.exceptions.InvalidCredentialsException;
-import com.samczsun.skype4j.exceptions.ParseException;
 import com.skype.jenkins.dto.ConfigJobDTO;
 import com.skype.jenkins.dto.ConfigJobDTO.NotifyDTO;
 import com.skype.jenkins.dto.ConfigJobDTO.NotifyTypeEnum;
@@ -19,9 +12,6 @@ import com.skype.jenkins.dto.JenkinsJobDTO;
 import com.skype.jenkins.dto.JobResultEnum;
 import com.skype.jenkins.dto.ParametersDTO;
 import com.skype.jenkins.logger.Logger;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 public class NotifyHelper {
     
