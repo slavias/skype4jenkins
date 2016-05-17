@@ -167,7 +167,7 @@ public class NotifyHelper {
             Elements summary = doc.select(".summary-leading-column").get(0).parents();
             thucydidesResult.append("test passed: ").append(summary.select("td").get(2).text()).append("\n");
             thucydidesResult.append("test failed: ").append(summary.select("td").get(3).text()).append("\n");
-            thucydidesResult.append("report Url: ").append(jenkins.prepareUrl(jobConfig.getInfo().getJobName(), null, "thucydides")).append("\n");
+            thucydidesResult.append("report Url: ").append(jenkins.prepareUrl(jobConfig.getInfo().getJobName(), jobDTO.getNumber(), "thucydides")).append("\n");
         }
         return thucydidesResult.toString();
     }

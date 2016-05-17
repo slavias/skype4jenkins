@@ -2,6 +2,7 @@ package com.skype.jenkins.rest;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import com.skype.jenkins.JsonUtil;
 import com.skype.jenkins.dto.JenkinsJobDTO;
@@ -54,6 +55,10 @@ public class JenkinsRestHelper extends RestHelper {
     }
     
 
+    public String prepareUrl(String jobName, Integer buildNumber, String type) {
+        return prepareUrl(jobName, Optional.ofNullable(buildNumber).map(obj -> obj.toString()).orElse(null), type);
+    }
+    
     public String prepareUrl(String jobName, String buildNumber, String type) {
         if (null == buildNumber){
             buildNumber="lastBuild";
