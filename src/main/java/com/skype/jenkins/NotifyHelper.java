@@ -117,7 +117,7 @@ public class NotifyHelper {
     private String publishBuildMessage(String message) {
         StringBuilder textOutput = new StringBuilder();
         textOutput.append(message);
-        Logger.out.info(message);
+        Logger.out.debug(message);
         return textOutput.append("\n").toString();
     }
 
@@ -140,7 +140,7 @@ public class NotifyHelper {
         for (ParametersDTO param : parameters) {
             String paramMessage = null == param.getMessage() ? param.getName() + " : " + param.getValue() : String.format(param.getMessage(), param.getValue());
             textOutput.append(paramMessage).append("\n");
-            Logger.out.info(paramMessage);
+            Logger.out.debug(paramMessage);
         }
         return textOutput.toString();
     }
@@ -149,8 +149,8 @@ public class NotifyHelper {
         StringBuilder textOutput = new StringBuilder();
         for (String finded: consoleLog.stream().filter(line -> line.contains(text)).collect(Collectors.toList())){
             textOutput.append(finded).append("\n");
-            Logger.out.info(finded);
         }
+        Logger.out.debug(textOutput);
         return textOutput.toString();
     }
     
@@ -169,6 +169,7 @@ public class NotifyHelper {
             thucydidesResult.append("test failed: ").append(summary.select("td").get(3).text()).append("\n");
             thucydidesResult.append("report Url: ").append(jenkins.prepareUrl(jobConfig.getInfo().getJobName(), jobDTO.getNumber(), "thucydides")).append("\n");
         }
+        Logger.out.debug(thucydidesResult);
         return thucydidesResult.toString();
     }
 

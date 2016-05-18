@@ -36,7 +36,7 @@ public class JobThread implements Runnable{
         Thread.currentThread().setName(jobConfig.getInfo().getName());
         //Logger.out.info("thread start");
         
-        Logger.out.info("---triggered---");
+        Logger.out.debug("---triggered---");
         jobInfo = jenkins.getJenkinsJobInfo(jobConfig.getInfo().getJobName());
         jobConsole = jenkins.getJenkinsJobConsole(jobConfig.getInfo().getJobName());
         notifyHelper.updateJenkinsResponce(jobInfo, jobConsole);
@@ -48,6 +48,7 @@ public class JobThread implements Runnable{
                     // Logger.out.info("statusOfEachBuild ");
                     jobMessage = notifyHelper.executeStatusOfEachBuild(notifier);
                     if (!jobMessage.isEmpty()) {
+                        Logger.out.info("Start notify");
                         SkypeHelper.sendSkype(jobMessage + jobInfo.getUrl() + "\n" + notifyHelper.getThucydidesReport(jenkins), jobConfig.getInfo().getChatId());
                     }
                     break;
