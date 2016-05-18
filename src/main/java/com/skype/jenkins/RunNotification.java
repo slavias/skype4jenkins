@@ -47,7 +47,7 @@ public class RunNotification {
                 fileInline.append(line);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.out.error(e);
         }
         return JsonUtil.fromJson(fileInline.toString(), ConfigDTO.class);
     }

@@ -36,8 +36,7 @@ public class SkypeHelper {
                 }
                 System.out.println("Logged in");
             } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Logger.out.error(e);
             }
         }
         return skype;
@@ -49,8 +48,7 @@ public class SkypeHelper {
             try {
                 chatMap.put(chatName, (GroupChat) getSkype().joinChat(chatName));
             } catch (ConnectionException | ChatNotFoundException | NoPermissionException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Logger.out.error(e);
             }
         }
         return chatMap.get(chatName);
@@ -62,8 +60,7 @@ public class SkypeHelper {
             Logger.out.info("SEND TO SKYPE: " + chatName + "\n" + message);
             groupChat.sendMessage(message);
         } catch (ConnectionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Logger.out.error(e);
         }
     }
     
@@ -136,8 +133,7 @@ public class SkypeHelper {
         try {
             skype.subscribe();
         } catch (ConnectionException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            Logger.out.error(e1);
         }
     }
 
