@@ -1,8 +1,10 @@
 package com.skype.jenkins;
 
-import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import com.samczsun.skype4j.Skype;
 import com.samczsun.skype4j.SkypeBuilder;
@@ -13,8 +15,9 @@ import com.samczsun.skype4j.events.Listener;
 import com.samczsun.skype4j.events.chat.ChatEvent;
 import com.samczsun.skype4j.exceptions.ChatNotFoundException;
 import com.samczsun.skype4j.exceptions.ConnectionException;
+import com.samczsun.skype4j.exceptions.InvalidCredentialsException;
 import com.samczsun.skype4j.exceptions.NoPermissionException;
-import com.samczsun.skype4j.internal.StreamUtils;
+import com.samczsun.skype4j.exceptions.NotParticipatingException;
 import com.skype.jenkins.logger.Logger;
 
 public class SkypeHelper {
@@ -27,20 +30,44 @@ public class SkypeHelper {
     
     public static Skype getSkype() {
         if (null == skype){
-            try {
-                String[] data = StreamUtils.readFully(new FileInputStream("credentials")).split(":");
-                skype = new SkypeBuilder(data[0], data[1]).withAllResources().build();
-                skype.login();
-                if (Boolean.parseBoolean(System.getProperty("bot.active"))) {
-                    subscribeBot();
-                }
-                System.out.println("Logged in");
-            } catch (Exception e) {
-                Logger.out.error(e);
+            skypeLogin();
+            if (Boolean.parseBoolean(System.getProperty("bot.active"))) {
+                subscribeBot();
             }
         }
         return skype;
         
+    }
+    
+    private static void skypeLogin() {
+        String[] data = null;
+        data  = addCredentials();
+        skype = new SkypeBuilder(data[0], data[1]).withAllResources().build();
+        try {
+            skype.login();
+            System.out.println("Logged in");
+        } catch (NotParticipatingException | InvalidCredentialsException | ConnectionException e) {
+            // TODO Auto-generated catch block
+            Logger.out.error(e);
+            JOptionPane.showMessageDialog(new JFrame(), e.getMessage(), "Skype login",
+                    JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
+    }
+    
+    private static String[] addCredentials() {
+        LoginForm loginForm = new LoginForm();
+            loginForm.setVisible(true);
+            Logger.out.debug("wait for credentials");
+        while (loginForm.isVisible()){
+            try {
+                Thread.currentThread().sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        Logger.out.debug("credentials accepted");
+        return loginForm.getData();
     }
     
     public static GroupChat getChat(String chatName) {
