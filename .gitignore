@@ -1,5 +1,5 @@
 /target
-credentials
+/src/main/resources/credentials.*
 /src/main/resources/config
 !/src/main/resources/config/example.json
 .classpath
