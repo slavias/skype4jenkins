@@ -1,5 +1,7 @@
 package com.skype.jenkins;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,7 @@ import com.skype.jenkins.dto.JenkinsJobDTO;
 import com.skype.jenkins.dto.JobResultEnum;
 import com.skype.jenkins.logger.Logger;
 
+import static com.skype.jenkins.logger.Logger.stackTrace;
 import static com.skype.jenkins.rest.JenkinsRestHelper.getJenkinsHelper;
 
 public class JobThread implements Runnable{
@@ -75,8 +78,7 @@ public class JobThread implements Runnable{
                 currentStatus.add(jobInfo.getResult());
             }
         }catch (Throwable e){
-            e.printStackTrace();
-            Logger.out.error("Caught exception in ScheduledExecutorService");
+            Logger.out.error("Caught exception in ScheduledExecutorService, see stacktrace"+ stackTrace(e));
         }
     }
 }

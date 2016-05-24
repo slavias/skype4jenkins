@@ -1,5 +1,7 @@
 package com.skype.jenkins.logger;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 
 import org.slf4j.LoggerFactory;
@@ -110,4 +112,11 @@ public class Logger {
         Logger.out.trace("%s: [%s]", loggerMessage, sb.toString());
     }
 
+    public static String stackTrace(Throwable cause) {
+        StringWriter sw = new StringWriter();
+        final PrintWriter pw = new PrintWriter(sw);
+        cause.printStackTrace(pw);
+        pw.flush();
+        return sw.toString();
+    }
 }

@@ -42,9 +42,16 @@ public class RunNotification {
         SkypeHelper.getSkype();
         JenkinsRestHelper.init(getConfiguration().getJenkinsUrl());
         initializeJobThreads();
-        ScheduledExecutorService service = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
-        jobs.forEach(job -> service.scheduleAtFixedRate(job, 1, job.getJobConfig().getInfo().getTimeout(),
-                TimeUnit.SECONDS));
+        int numberProcessors = Runtime.getRuntime().availableProcessors();
+        Logger.out.info("Number of available processors = " + numberProcessors);
+        ScheduledExecutorService service = Executors.newScheduledThreadPool(numberProcessors);
+        //TODO:delete timeout for jobs at conf file
+        jobs.forEach(job -> {
+            int delay = 10 + (int) (Math.random() * ((20 - 10) + 1));
+            Logger.out.info(
+                    "Delay for job ".concat(job.getJobConfig().getInfo().getName()).concat(" is equal to " + delay));
+            service.scheduleWithFixedDelay(job, 1, delay, TimeUnit.SECONDS);
+        });
     }
 
     public static ConfigDTO parseConfigFile(String configName) {
