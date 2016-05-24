@@ -15,7 +15,6 @@ import com.samczsun.skype4j.exceptions.ChatNotFoundException;
 import com.samczsun.skype4j.exceptions.ConnectionException;
 import com.samczsun.skype4j.exceptions.InvalidCredentialsException;
 import com.samczsun.skype4j.exceptions.NotParticipatingException;
-import com.samczsun.skype4j.internal.SkypeImpl;
 import com.samczsun.skype4j.internal.StreamUtils;
 import com.skype.jenkins.logger.Logger;
 
@@ -45,15 +44,10 @@ public class SkypeHelper {
 
     }
 
-    private synchronized static Skype reinitializeSkype() {
-        try {
+    private synchronized static void reinitializeSkype() {
             Logger.out.info("Reinitialize Skype");
-            ((SkypeImpl) skype).reauthenticate();
-        } catch (InvalidCredentialsException | ConnectionException | NotParticipatingException e) {
-            Logger.out.error("Caught exception reinitializeSkype()  " + stackTrace(e));
-        }
-        return skype;
-
+            skype = null;
+            getSkype();
     }
 
     public synchronized static void sendSkype(String message, String chatName) {
@@ -72,7 +66,7 @@ public class SkypeHelper {
             } catch (ConnectionException | ChatNotFoundException e) {
                 Logger.out.error("sendSkype Exception " + stackTrace(e));
             }
-        } while (illegalStateException != null && (i < 10));
+        } while ((illegalStateException != null) && (i < 10));
     }
 
     private static void subscribeBot() {
