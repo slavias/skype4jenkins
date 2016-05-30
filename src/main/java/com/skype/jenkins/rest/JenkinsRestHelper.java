@@ -32,10 +32,10 @@ public class JenkinsRestHelper extends RestHelper {
         String url = prepareUrl(jobName, buildNumber, "info");
         JenkinsJobDTO jj = JsonUtil.fromJson(
                 sendAndGetResponse(url, HttpMethod.GET, getHttpEntityWithHeaders()).getBody(), JenkinsJobDTO.class);
+        if (Objects.isNull(jj)) return null;
         if (jj.isBuilding()) {
             jj.setResult(JobResultEnum.IN_PROGRESS);
         }
-
         return jj;
     }
 

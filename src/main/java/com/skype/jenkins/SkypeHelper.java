@@ -48,6 +48,7 @@ public class SkypeHelper {
             Logger.out.info("Reinitialize Skype");
             skype = null;
             getSkype();
+          Logger.out.info("Reinitialize Skype Finished");
     }
 
     public synchronized static void sendSkype(String message, String chatName) {
