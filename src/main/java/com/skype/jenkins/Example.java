@@ -5,9 +5,6 @@ import java.io.FileInputStream;
 
 import javax.imageio.ImageIO;
 
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 import com.samczsun.skype4j.Skype;
 import com.samczsun.skype4j.SkypeBuilder;
 import com.samczsun.skype4j.chat.GroupChat;
@@ -23,8 +20,6 @@ import com.samczsun.skype4j.events.chat.user.action.TopicUpdateEvent;
 import com.samczsun.skype4j.events.contact.ContactRequestEvent;
 import com.samczsun.skype4j.exceptions.ConnectionException;
 import com.samczsun.skype4j.formatting.Message;
-import com.samczsun.skype4j.internal.Endpoints;
-import com.samczsun.skype4j.internal.SkypeImpl;
 import com.samczsun.skype4j.internal.StreamUtils;
 /**
  * Skype example
