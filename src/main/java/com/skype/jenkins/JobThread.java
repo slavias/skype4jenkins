@@ -9,23 +9,26 @@ import com.skype.jenkins.dto.ConfigJobDTO.NotifyDTO;
 import com.skype.jenkins.dto.JenkinsJobDTO;
 import com.skype.jenkins.dto.JobResultEnum;
 import com.skype.jenkins.logger.Logger;
+import com.skype.jenkins.rest.JenkinsRestHelper;
 
 import static com.skype.jenkins.logger.Logger.stackTrace;
-import static com.skype.jenkins.rest.JenkinsRestHelper.getJenkinsHelper;
 
 public class JobThread implements Runnable {
 
     private final ConfigJobDTO jobConfig;
     private List<JobResultEnum> currentStatus;
-
+    private JenkinsRestHelper jenkinsApi;
+    
+    
     private NotifyHelper notifyHelper;
     private JenkinsJobDTO jobInfo;
     private List<String> jobConsole;
 
-    public JobThread(ConfigJobDTO jobConfig) {
+    public JobThread(ConfigJobDTO jobConfig, String jenkinsUrl) {
         this.jobConfig = jobConfig;
         currentStatus = new ArrayList<>();
         notifyHelper = new NotifyHelper(jobConfig, currentStatus);
+        jenkinsApi = JenkinsRestHelper.getInstance(jenkinsUrl);
     }
 
     public ConfigJobDTO getJobConfig() {
@@ -37,10 +40,10 @@ public class JobThread implements Runnable {
         try{
             Thread.currentThread().setName(jobConfig.getInfo().getName()+" id "+ Thread.currentThread().getId());
             Logger.out.debug("---triggered---");
-            jobInfo = getJenkinsHelper().getJobInfo(jobConfig.getInfo().getJobName());
+            jobInfo = jenkinsApi.getJobInfo(jobConfig.getInfo().getJobName());
             if (Objects.isNull(jobInfo))
                 return;
-            jobConsole = getJenkinsHelper().getJobConsole(jobConfig.getInfo().getJobName());
+            jobConsole = jenkinsApi.getJobConsole(jobConfig.getInfo().getJobName());
             notifyHelper.updateJenkinsResponce(jobInfo, jobConsole);
             if (!currentStatus.isEmpty()) {
                 for (NotifyDTO notifier : jobConfig.getNotify()) {
@@ -53,7 +56,7 @@ public class JobThread implements Runnable {
                             Logger.out.info("Start notify");
                             SkypeHelper.sendSkype(
                                     jobMessage + jobInfo.getUrl() + "\n"
-                                            + notifyHelper.getThucydidesReport(getJenkinsHelper()),
+                                            + notifyHelper.getThucydidesReport(jenkinsApi),
                                     jobConfig.getInfo().getChatId());
                         }
                         break;
@@ -63,7 +66,7 @@ public class JobThread implements Runnable {
                         if (!jobMessage.isEmpty()) {
                             SkypeHelper.sendSkype(
                                     jobMessage + jobInfo.getUrl() + "\n"
-                                            + notifyHelper.getThucydidesReport(getJenkinsHelper()),
+                                            + notifyHelper.getThucydidesReport(jenkinsApi),
                                     jobConfig.getInfo().getChatId());
                         }
                         break;

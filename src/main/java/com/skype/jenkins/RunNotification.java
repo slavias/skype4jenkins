@@ -11,46 +11,45 @@ import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import com.skype.jenkins.dto.ConfigDTO;
 import com.skype.jenkins.logger.Logger;
-import com.skype.jenkins.rest.JenkinsRestHelper;
 
 public class RunNotification {
 
-    private static ConfigDTO configData;
+    private static List<ConfigDTO> configData;
     private static List<JobThread> jobs = new ArrayList<>();
 
-    private static ConfigDTO initConfData() {
+    private static List<ConfigDTO> initConfData() {
         String confPath = Optional.ofNullable(System.getProperty("config.file"))
                 .orElseThrow(() -> new RuntimeException("Specify config.file property"));
-        Arrays.asList(confPath.split(",")).forEach(file -> {
-            configData = parseConfigFile(file.trim());
-        });
+        configData = Arrays.asList(confPath.split(",")).stream().map(conf -> parseConfigFile(conf.trim())).collect(Collectors.toList());
         return configData;
     }
 
-    public static ConfigDTO getConfiguration() {
+    public static List<ConfigDTO> getConfiguration() {
         return Optional.ofNullable(configData).orElseGet(RunNotification::initConfData);
     }
 
     private static void initializeJobThreads() {
-        getConfiguration().getJobs().stream().forEach(jobConfiguration -> jobs.add(new JobThread(jobConfiguration)));
+        getConfiguration().forEach(
+                allConfiguration -> allConfiguration.getJobs().forEach(
+                        jobConfiguration -> jobs.add(new JobThread(jobConfiguration, allConfiguration
+                                .getJenkinsUrl()))));
     }
 
     public static void main(String[] args) throws Exception {
         SkypeHelper.getSkype();
-        JenkinsRestHelper.init(getConfiguration().getJenkinsUrl());
         initializeJobThreads();
         int numberProcessors = Runtime.getRuntime().availableProcessors();
         Logger.out.info("Number of available processors = " + numberProcessors);
         ScheduledExecutorService service = Executors.newScheduledThreadPool(numberProcessors);
-        //TODO:delete timeout for jobs at conf file
         jobs.forEach(job -> {
-            int delay = 10 + (int) (Math.random() * ((20 - 10) + 1));
+            int initDelay = (int) (Math.random() % job.getJobConfig().getInfo().getTimeout());
             Logger.out.info(
-                    "Delay for job ".concat(job.getJobConfig().getInfo().getName()).concat(" is equal to " + delay));
-            service.scheduleWithFixedDelay(job, 1, delay, TimeUnit.SECONDS);
+                    "Initial delay for job ".concat(job.getJobConfig().getInfo().getName()).concat(" is equal to " + initDelay));
+            service.scheduleWithFixedDelay(job, initDelay, job.getJobConfig().getInfo().getTimeout(), TimeUnit.SECONDS);
         });
     }
 
