@@ -21,13 +21,13 @@ import org.jsoup.select.Elements;
 public class NotifyHelper {
     
     private final ConfigJobDTO jobConfig;
-    private final List<JobResultEnum> currentStatus;
-    private JenkinsJobDTO jobDTO;
+    private final JobResultEnum lastJobStatus;
+    private static JenkinsJobDTO jobDTO;
     private List<String> consoleLog;
     
-    public NotifyHelper(ConfigJobDTO jobConfig, List<JobResultEnum> currentStatus) {
+    public NotifyHelper(ConfigJobDTO jobConfig, JobResultEnum lastJobStatus) {
         this.jobConfig = jobConfig;
-        this.currentStatus = currentStatus;
+        this.lastJobStatus = lastJobStatus;
         this.jobDTO = null;
         this.consoleLog = null;
         
@@ -38,13 +38,14 @@ public class NotifyHelper {
         this.consoleLog = consoleLog;
         return this;
     }
-    
-    private List<JobResultEnum> getCurrentStatusIgnored(JobResultEnum... ignoredStatus){
-        return getCurrentStatusIgnored(Arrays.asList(ignoredStatus));
+
+    public static synchronized JenkinsJobDTO getJobDTO(){
+        return jobDTO;
     }
     
+
     private List<JobResultEnum> getCurrentStatusIgnored(List<JobResultEnum> ignoredStatus){
-        List<JobResultEnum> statusesEnums = currentStatus.stream().collect(Collectors.toList());
+        List<JobResultEnum> statusesEnums = lastJobStatus.stream().collect(Collectors.toList());
         for (JobResultEnum status: ignoredStatus){
             statusesEnums.removeIf(el -> status.equals(el));
         }
@@ -54,7 +55,7 @@ public class NotifyHelper {
     public String executeStatusOfEachBuild(NotifyDTO notifier){
         //NotifyDTO notifier = jobConfig.getNotifierByType(NotifyTypeEnum.statusOfEachBuild);
         StringBuilder textOutput = new StringBuilder();
-        if (currentStatus.get(currentStatus.size()-1 ) == jobDTO.getResult() || null == notifier.getNotifyStatusByType(jobDTO.getResult())){
+        if (lastJobStatus == jobDTO.getResult() || null == notifier.getNotifyStatusByType(jobDTO.getResult())){
             return "";
         }
         textOutput.append(publishBuildMessage(notifier.getNotifyStatusByType(jobDTO.getResult()).getMessage()));
@@ -85,13 +86,13 @@ public class NotifyHelper {
     public String executeBuildStillRed(NotifyDTO notifier){
         //NotifyDTO notify = jobConfig.getNotifierByType(NotifyTypeEnum.buildStillRed);
         StringBuilder textOutput = new StringBuilder("");
-        if (currentStatus.get(currentStatus.size()-1 ) == jobDTO.getResult()){
+        if (lastJobStatus== jobDTO.getResult()){
             return "";
         }
         try{
-            if (JobResultEnum.IN_PROGRESS.equals(currentStatus.get(currentStatus.size()-1 )) 
-                    && JobResultEnum.FAILURE.equals(jobDTO.getResult()) 
-                    && JobResultEnum.FAILURE.equals(currentStatus.get(currentStatus.size()-2 ))){
+            if (JobResultEnum.IN_PROGRESS.equals(lastJobStatus)
+                    && JobResultEnum.FAILURE.equals(jobDTO.getResult()))
+                {
                 textOutput.append(publishBuildMessage(notifier.getMessage()));
                 textOutput.append(publishParameters(prepareAllParameters(NotifyTypeEnum.buildStillRed, null)));
                 
@@ -101,58 +102,8 @@ public class NotifyHelper {
         }
         return textOutput.toString();
     }
-    
-    public void executeBuildFrozen(NotifyDTO notifier){
-        //NotifyDTO notify = jobConfig.getNotifierByType(NotifyTypeEnum.buildFrozen);
-        //TODO
-        
-    }
-    
-    public void executeDailyReport(NotifyDTO notifier){
-        //NotifyDTO notify = jobConfig.getNotifierByType(NotifyTypeEnum.dailyReport);
-        //TODO
-        
-    }
-    
-    private String publishBuildMessage(String message) {
-        StringBuilder textOutput = new StringBuilder();
-        textOutput.append(message);
-        Logger.out.debug(message);
-        return textOutput.append("\n").toString();
-    }
 
-    private List<ParametersDTO> prepareAllParameters(NotifyTypeEnum notifyType, JobResultEnum notifyStatusType) {
-        List<ParametersDTO> parameters = new ArrayList<>();
-        parameters.addAll(jobConfig.getDefaultParameters());
-        if (null != notifyType) {
-            parameters.addAll(jobConfig.getNotifierByType(notifyType).getParameters());
-            if (null != notifyStatusType) {
-                parameters.addAll(jobConfig.getNotifierByType(notifyType).getNotifyStatusByType(notifyStatusType).getParameters());
-            }
-        }
-        parameters.stream().forEach(par -> par.setValue(jobDTO.getParameterByName(par.getName()).getValue()));
-        
-        return parameters.stream().filter(par -> null != par.getValue()).collect(Collectors.toList());
-    }
-    
-    private String publishParameters(List<ParametersDTO> parameters) {
-        StringBuilder textOutput = new StringBuilder();
-        for (ParametersDTO param : parameters) {
-            String paramMessage = null == param.getMessage() ? param.getName() + " : " + param.getValue() : String.format(param.getMessage(), param.getValue());
-            textOutput.append(paramMessage).append("\n");
-            Logger.out.debug(paramMessage);
-        }
-        return textOutput.toString();
-    }
-    
-    private String publishConsole(String text) {
-        StringBuilder textOutput = new StringBuilder();
-        for (String finded: consoleLog.stream().filter(line -> line.contains(text)).collect(Collectors.toList())){
-            textOutput.append(finded).append("\n");
-        }
-        Logger.out.debug(textOutput);
-        return textOutput.toString();
-    }
+
     
     public String getThucydidesReport(JenkinsRestHelper jenkins) {
         StringBuilder thucydidesResult = new StringBuilder("");
