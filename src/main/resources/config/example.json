@@ -1,22 +1,159 @@
 {
-	"jenkinsUrl": "jenkins url with port",
+	"jenkinsUrl": "jenkins.marks.kyiv.epam.com/",
 	"jobs":[
+		{
+			"info":{
+				"name": "userroles",
+				"jobName": "08.2.4_pos_run_userroles_test",
+				"chatId": "19:47089c45f0954aa1aeee9000cff39148@thread.skype"
+
+			},
+			"defaultParameters": [
+				{
+					"name": "CONFIG_FILE",
+					"message": "Config file is %s"
+				}
+			],
+			"notify":[
+				{
+					"type": "statusOfEachBuild",
+					"status":[
+						{
+							"type": "SUCCESS",
+							"message": "(rock) - userroles tests completed.",
+							"lineFromLog" : "Started by user"
+						},
+						{
+							"type": "FAILURE",
+							"message": "(swear) - something went wrong with userroles tests.",
+							"lineFromLog" : "Started by user"
+						},
+						{
+							"type": "UNSTABLE",
+							"message": "(angry) - userroles tests completed, some subjob failed.",
+							"lineFromLog" : "Started by user"
+						},
+						{
+							"type": "ABORTED",
+							"message": "(sarcastic) - pssst I think someone aborted  userroles tests.",
+							"lineFromLog" : "Aborted"
+						},
+						{
+							"type": "IN_PROGRESS",
+							"message": "(penguin) - userroles test started.",
+							"lineFromLog" : "Started by user"
+						}
+					]
+				}
+			]
+		},
 			{
 			"info":{
-				"name": "POS-QA-Smoke",
-				"jobName": "08.2.3_run_test_suite_smoke_CI",
-				"timeout":10,
-				"chatId": "/get name"
+				"name": "bugs",
+				"jobName": "08.2.7_pos_run_bugs_scenarios",
+				"chatId": "19:47089c45f0954aa1aeee9000cff39148@thread.skype"
 				
 			},
 			"defaultParameters": [
 				{
-				"name": "PARALLEL_CONFIG_FILE",
-				"message": "Parallel Config file is %s"
+				"name": "CONFIG_FILE",
+				"message": "Config file is %s"
+				}
+			],
+			"notify":[
+				{
+					"type": "statusOfEachBuild",
+					"status":[
+						{
+							"type": "SUCCESS",
+							"message": "(rock) - bugs tests completed.",
+							"lineFromLog" : "Started by user"
+						},
+						{
+							"type": "FAILURE",
+							"message": "(swear) - something went wrong with bugs tests.",
+							"lineFromLog" : "Started by user"
+						},
+						{
+							"type": "UNSTABLE",
+							"message": "(angry) - bugs tests completed, some subjob failed.",
+							"lineFromLog" : "Started by user"
+						},
+						{
+							"type": "ABORTED",
+							"message": "(sarcastic) - pssst I think someone aborted  bugs tests.",
+							"lineFromLog" : "Aborted"
+						},
+						{
+							"type": "IN_PROGRESS",
+							"message": "(penguin) - smoke test started.",
+							"lineFromLog" : "Started by user"
+						}
+					]
+				}
+			]
+		},
+		{
+			"info":{
+				"name": "arts",
+				"jobName": "08.2.6_pos_run_arts_xml_scenarios",
+				"chatId": "19:47089c45f0954aa1aeee9000cff39148@thread.skype"
+			},
+			"defaultParameters": [
+				{
+				"name": "CONFIG_FILE",
+				"message": "Config file is %s"
+				}
+			],
+			"notify":[
+				{
+					"type": "statusOfEachBuild",
+					"status":[
+						{
+							"type": "SUCCESS",
+							"message": "(rock) - arts tests completed.",
+							"lineFromLog" : "Started by user"
+						},
+						{
+							"type": "FAILURE",
+							"message": "(swear) - something went wrong with arts tests.",
+							"lineFromLog" : "Started by user"
+						},
+						{
+							"type": "UNSTABLE",
+							"message": "(angry) - arts tests completed, some subjob failed.",
+							"lineFromLog" : "Started by user"
+						},
+						{
+							"type": "ABORTED",
+							"message": "(sarcastic) - pssst I think someone aborted  arts tests.",
+							"lineFromLog" : "Aborted"
+						},
+						{
+							"type": "IN_PROGRESS",
+							"message": "(penguin) - arts test started.",
+							"lineFromLog" : "Started by user"
+						}
+					]
+				}
+			]
+		},
+		{
+			"info":{
+				"name": "POS-QA-Smoke",
+				"jobName": "08.2.3_run_test_suite_smoke_CI",
+				"timeout":10,
+				"chatId": "19:47089c45f0954aa1aeee9000cff39148@thread.skype"
+
+			},
+			"defaultParameters": [
+				{
+					"name": "PARALLEL_CONFIG_FILE",
+					"message": "Parallel Config file is %s"
 				},
 				{
-				"name": "GLOBAL_CONFIG_FILE",
-				"message": "Global Config file is %s"
+					"name": "GLOBAL_CONFIG_FILE",
+					"message": "Global Config file is %s"
 				}
 			],
 			"notify":[
@@ -40,7 +177,7 @@
 						},
 						{
 							"type": "ABORTED",
-							"message": "(sarcastic) - pssst I think someone {0} smoke tests.",
+							"message": "(sarcastic) - pssst I think someone aborted  smoke tests.",
 							"lineFromLog" : "Aborted"
 						},
 						{
@@ -57,16 +194,16 @@
 				"name": "POS-QA-e2e",
 				"jobName": "08.2.2_run_test_suite",
 				"timeout":10,
-				"chatId": "/get name"
+				"chatId": "19:47089c45f0954aa1aeee9000cff39148@thread.skype"
 			},
 			"defaultParameters": [
 				{
-				"name": "PARALLEL_CONFIG_FILE",
-				"message": "Parallel Config file is %s"
+					"name": "PARALLEL_CONFIG_FILE",
+					"message": "Parallel Config file is %s"
 				},
 				{
-				"name": "GLOBAL_CONFIG_FILE",
-				"message": "Global Config file is %s"
+					"name": "GLOBAL_CONFIG_FILE",
+					"message": "Global Config file is %s"
 				}
 			],
 			"notify":[
@@ -90,131 +227,13 @@
 						},
 						{
 							"type": "ABORTED",
-							"message": "(sarcastic) - pssst I think someone {0} E2E tests.",
+							"message": "(sarcastic) - pssst I think someone aborted  E2E tests.",
 							"lineFromLog" : "Aborted"
 						},
 						{
 							"type": "IN_PROGRESS",
 							"message": "(penguin) - E2E test started.",
 							"lineFromLog" : "Started by user"
-						}
-					]
-				}
-			]
-		},
-		{
-			"info":{
-				"name": "Deploy-env",
-				"jobName": "08.2.AUTO_Deploy2Env",
-				"timeout":10,
-				"chatId": "/get name"
-			},
-			"notify":[
-				{
-					"type": "statusOfEachBuild",
-					"status":[
-						{
-							"type": "SUCCESS",
-							"message": "(*)",
-							"lineFromLog" : "Started by user",
-							"parameters": [
-								{
-								"name": "ENV",
-								"message": "Deploy on %s Env completed"
-								}
-							]	
-						},
-						{
-							"type": "FAILURE",
-							"message": "(*)",
-							"lineFromLog" : "Started by user",
-							"parameters": [
-								{
-								"name": "ENV",
-								"message": "Deploy on %s Env failed"
-								}
-							]	
-						},
-						{
-							"type": "ABORTED",
-							"message": "(*)",
-							"lineFromLog" : "Aborted",
-							"parameters": [
-								{
-								"name": "ENV",
-								"message": "Deploy on %s Env aborted"
-								}
-							]	
-						},
-						{
-							"type": "IN_PROGRESS",
-							"message": "(*)",
-							"lineFromLog" : "Started by user",
-							"parameters": [
-								{
-								"name": "ENV",
-								"message": "Started deploy on %s Env"
-								}
-							]	
-						}
-					]
-				}
-			]
-		},
-		{
-			"info":{
-				"name": "Deploy-env-2",
-				"jobName": "08.2.AUTO_Deploy2Env_parallel",
-				"timeout":10,
-				"chatId": "/get name"
-			},
-			"notify":[
-				{
-					"type": "statusOfEachBuild",
-					"status":[
-						{
-							"type": "SUCCESS",
-							"message": "(*)",
-							"lineFromLog" : "Started by user",
-							"parameters": [
-								{
-								"name": "ENV",
-								"message": "Deploy on %s Env completed"
-								}
-							]	
-						},
-						{
-							"type": "FAILURE",
-							"message": "(*)",
-							"lineFromLog" : "Started by user",
-							"parameters": [
-								{
-								"name": "ENV",
-								"message": "Deploy on %s Env failed"
-								}
-							]	
-						},
-						{
-							"type": "ABORTED",
-							"message": "(*)",
-							"lineFromLog" : "Aborted",
-							"parameters": [
-								{
-								"name": "ENV",
-								"message": "Deploy on %s Env aborted"
-								}
-							]	
-						},
-						{
-							"type": "IN_PROGRESS",
-							"message": "(*)",
-							"lineFromLog" : "Started by user",
-							"parameters": [
-								{
-								"name": "ENV",
-								"message": "Started deploy on %s Env"
-								}
-							]	
 						}
 					]
 				}

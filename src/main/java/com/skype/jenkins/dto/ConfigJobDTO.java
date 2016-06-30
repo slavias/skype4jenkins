@@ -105,8 +105,8 @@ public class ConfigJobDTO {
         private NotifyTypeEnum type;
         @SerializedName("parameters")
         private List<ParametersDTO> parameters;
-        @SerializedName("status")
-        private List<NotifyStatusDto> status;
+        @SerializedName("statuses")
+        private List<NotifyStatusDto> statuses;
         @SerializedName("message")
         private String message;
         
@@ -122,11 +122,11 @@ public class ConfigJobDTO {
         public void setParameters(List<ParametersDTO> parameters) {
             this.parameters = parameters;
         }
-        public List<NotifyStatusDto> getStatus() {
-            return status;
+        public List<NotifyStatusDto> getStatuses() {
+            return statuses;
         }
-        public void setStatus(List<NotifyStatusDto> status) {
-            this.status = status;
+        public void setStatuses(List<NotifyStatusDto> statuses) {
+            this.statuses = statuses;
         }
         
         public String getMessage() {
@@ -135,12 +135,12 @@ public class ConfigJobDTO {
         public void setMessage(String message) {
             this.message = message;
         }
-        
+
         public NotifyStatusDto getNotifyStatusByType(JobResultEnum type){
-            return getStatus().stream().filter(notifier -> type.equals(notifier.getType())).findAny().orElse(null);
+            return getStatuses().stream().filter(notifier -> type.equals(notifier.getType())).findAny().orElse(null);
         }
-        
-        
+
+
     }
     
     public class NotifyStatusDto {
@@ -150,11 +150,9 @@ public class ConfigJobDTO {
         private String message;
         @SerializedName("parameters")
         private List<ParametersDTO> parameters;
-        @SerializedName("timeout")
-        private String timeout;
         @SerializedName("lineFromLog")
         private String lineFromLog;
-        
+
         
         public JobResultEnum getType() {
             return type;
@@ -174,12 +172,6 @@ public class ConfigJobDTO {
         public void setParameters(List<ParametersDTO> parameters) {
             this.parameters = parameters;
         }
-        public String getTimeout() {
-            return timeout;
-        }
-        public void setTimeout(String timeout) {
-            this.timeout = timeout;
-        }
         public String getLineFromLog() {
             return lineFromLog;
         }
@@ -187,15 +179,6 @@ public class ConfigJobDTO {
             this.lineFromLog = lineFromLog;
         }
         
-        
-    }
-    
-    public enum NotifyTypeEnum {
-        statusOfEachBuild,
-        buildStatusChanged,
-        buildStillRed,
-        buildFrozen,
-        dailyReport;
         
     }
 }

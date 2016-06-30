@@ -26,6 +26,7 @@ import com.samczsun.skype4j.internal.StreamUtils;
  */
 public class Example {
     public static void main(String[] args) throws Exception {
+        System.out.println(String.valueOf(null));
         try {
             String[] data = StreamUtils.readFully(new FileInputStream("credentials")).split(":");
             Skype skype = new SkypeBuilder(data[0], data[1]).withAllResources().build();

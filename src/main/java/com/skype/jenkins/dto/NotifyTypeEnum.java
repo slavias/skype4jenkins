@@ -6,5 +6,4 @@ public enum NotifyTypeEnum {
     buildStillRed,
     buildFrozen,
     dailyReport;
-
 }

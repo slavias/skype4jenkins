@@ -7,7 +7,9 @@ import com.skype.jenkins.dto.ConfigJobDTO;
 import com.skype.jenkins.dto.ConfigJobDTO.NotifyDTO;
 import com.skype.jenkins.dto.JenkinsJobDTO;
 import com.skype.jenkins.dto.JobResultEnum;
+import com.skype.jenkins.dto.NotifyTypeEnum;
 import com.skype.jenkins.logger.Logger;
+import com.skype.jenkins.notifiers.NotifierFactory;
 import com.skype.jenkins.rest.JenkinsRestHelper;
 
 import static com.skype.jenkins.logger.Logger.stackTrace;
@@ -24,7 +26,7 @@ public class JobThread implements Runnable {
 
     public JobThread(ConfigJobDTO jobConfig, String jenkinsUrl) {
         this.jobConfig = jobConfig;
-        notifyHelper = new NotifyHelper(jobConfig, null);
+//        notifyHelper = new NotifyHelper(jobConfig, null);
         jenkinsApi = JenkinsRestHelper.getInstance(jenkinsUrl);
     }
 
@@ -41,8 +43,9 @@ public class JobThread implements Runnable {
             if (Objects.isNull(jobInfo))
                 return;
             jobConsole = jenkinsApi.getJobConsole(jobConfig.getInfo().getJobName());
-            notifyHelper.updateJenkinsResponce(jobInfo, jobConsole);
-            if (Objects.nonNull(currentStatus)) {
+//            notifyHelper.updateJenkinsResponce(jobInfo, jobConsole);
+            List<String> jobMessages = NotifierFactory.getMessages(NotifyTypeEnum.statusOfEachBuild, jobConfig);
+         /*   if (Objects.nonNull(currentStatus)) {
                 for (NotifyDTO notifier : jobConfig.getNotify()) {
                     String jobMessage = null;
                     switch (notifier.getType()) {
@@ -72,8 +75,8 @@ public class JobThread implements Runnable {
                         break;
                     }
 
-                }
-            }
+                }*/
+//            }
             currentStatus = jobInfo.getResult();
         } catch (Throwable e) {
             Logger.out.error("Caught exception in ScheduledExecutorService, see stacktrace" + stackTrace(e));
