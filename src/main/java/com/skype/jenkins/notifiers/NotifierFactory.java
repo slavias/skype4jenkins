@@ -1,34 +1,30 @@
 package com.skype.jenkins.notifiers;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.skype.jenkins.dto.ConfigJobDTO;
-import com.skype.jenkins.dto.NotifyTypeEnum;
+import com.skype.jenkins.dto.ConfigJobDTO.NotifyDTO;
 
-/**
- * Created by Anastasiia_Tamazlyka on 6/30/2016.
- */
 public class NotifierFactory {
-    private static NotifierEachBuildStatus notifierEachBuildStatus = new NotifierEachBuildStatus();
-    
-    public static List<String> getMessages(NotifyTypeEnum type, final ConfigJobDTO jobConfig) {
-        List<String> listMessages = new ArrayList<>();
-        switch (type) {
-        case statusOfEachBuild:
-            notifierEachBuildStatus.setJobConfig(jobConfig);
-            listMessages = notifierEachBuildStatus.composeNotifications();
-            break;
-        case buildStatusChanged:
-            // notifier = new NotifierBuildStatusChanged();
-            // break;
-        case buildStillRed:
-            // notifier = new NotifierBuildStillRed();
-            // break;
-        case buildFrozen:
-        case dailyReport:
-            // TODO: need to implement
+
+    public static List<INotifier> registerNotifiersForJob(final String jobName) {
+        List<INotifier> neededNotifiers = new ArrayList<>();
+        Configuration conf = new Configuration(jobName);
+        for (NotifyDTO dto : conf.getJobConfig().getNotify()) {
+            conf.setNotifierType(dto.getType());
+            try {
+                Type clazz = dto.getType().getImplementingClass();
+                Constructor<?> ctor = Class.forName(clazz.getTypeName()).getConstructor(Configuration.class);
+                Object object = ctor.newInstance(conf);
+                neededNotifiers.add((INotifier) object);
+            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException
+                    | InvocationTargetException e) {
+                e.printStackTrace();
+            }
         }
-        return listMessages;
+        return neededNotifiers;
     }
 }

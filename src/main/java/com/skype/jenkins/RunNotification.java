@@ -24,7 +24,8 @@ public class RunNotification {
     private static List<ConfigDTO> initConfData() {
         String confPath = Optional.ofNullable(System.getProperty("config.file"))
                 .orElseThrow(() -> new RuntimeException("Specify config.file property"));
-        configData = Arrays.asList(confPath.split(",")).stream().map(conf -> parseConfigFile(conf.trim())).collect(Collectors.toList());
+        configData = Arrays.asList(confPath.split(",")).stream().map(conf -> parseConfigFile(conf.trim()))
+                .collect(Collectors.toList());
         return configData;
     }
 
@@ -33,10 +34,8 @@ public class RunNotification {
     }
 
     private static void initializeJobThreads() {
-        getConfiguration().forEach(
-                allConfiguration -> allConfiguration.getJobs().forEach(
-                        jobConfiguration -> jobs.add(new JobThread(jobConfiguration, allConfiguration
-                                .getJenkinsUrl()))));
+        getConfiguration().forEach(allConfiguration -> allConfiguration.getJobs()
+                .forEach(jobConfig -> jobs.add(new JobThread(jobConfig.getInfo().getJobName()))));
     }
 
     public static void main(String[] args) throws Exception {
@@ -46,10 +45,7 @@ public class RunNotification {
         Logger.out.info("Number of available processors = " + numberProcessors);
         ScheduledExecutorService service = Executors.newScheduledThreadPool(numberProcessors);
         jobs.forEach(job -> {
-            int initDelay = (int) (Math.random() % job.getJobConfig().getInfo().getTimeout());
-            Logger.out.info(
-                    "Initial delay for job ".concat(job.getJobConfig().getInfo().getName()).concat(" is equal to " + initDelay));
-            service.scheduleWithFixedDelay(job, initDelay, job.getJobConfig().getInfo().getTimeout(), TimeUnit.SECONDS);
+            service.scheduleWithFixedDelay(job, 1, 10, TimeUnit.SECONDS);
         });
     }
 
