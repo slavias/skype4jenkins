@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.skype.jenkins.Configuration;
 import javafx.util.Pair;
 
 import com.skype.jenkins.dto.JenkinsJobDTO;

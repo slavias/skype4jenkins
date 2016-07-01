@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -19,8 +18,6 @@ import com.skype.jenkins.logger.Logger;
 public class RunNotification {
 
     private static List<ConfigDTO> configData;
-    private static List<JobThread> jobs = new ArrayList<>();
-
     private static List<ConfigDTO> initConfData() {
         String confPath = Optional.ofNullable(System.getProperty("config.file"))
                 .orElseThrow(() -> new RuntimeException("Specify config.file property"));
@@ -33,20 +30,12 @@ public class RunNotification {
         return Optional.ofNullable(configData).orElseGet(RunNotification::initConfData);
     }
 
-    private static void initializeJobThreads() {
-        getConfiguration().forEach(allConfiguration -> allConfiguration.getJobs()
-                .forEach(jobConfig -> jobs.add(new JobThread(jobConfig.getInfo().getJobName()))));
-    }
-
     public static void main(String[] args) throws Exception {
         SkypeHelper.getSkype();
-        initializeJobThreads();
-        int numberProcessors = Runtime.getRuntime().availableProcessors();
-        Logger.out.info("Number of available processors = " + numberProcessors);
-        ScheduledExecutorService service = Executors.newScheduledThreadPool(numberProcessors);
-        jobs.forEach(job -> {
-            service.scheduleWithFixedDelay(job, 1, 10, TimeUnit.SECONDS);
-        });
+        ScheduledExecutorService service = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+        getConfiguration().stream().flatMap(allConfiguration -> allConfiguration.getJobs().stream())
+                .forEach(jobConfig -> service.scheduleWithFixedDelay(new JobThread(jobConfig.getInfo().getJobName()), 1,
+                        jobConfig.getInfo().getTimeout(), TimeUnit.SECONDS));
     }
 
     public static ConfigDTO parseConfigFile(String configName) {

@@ -1,4 +1,4 @@
-package com.skype.jenkins.notifiers;
+package com.skype.jenkins;
 
 import com.skype.jenkins.dto.ConfigJobDTO;
 import com.skype.jenkins.dto.NotifyTypeEnum;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.skype.jenkins.Configuration;
 import com.skype.jenkins.SkypeHelper;
 import com.skype.jenkins.dto.ConfigJobDTO;
 import com.skype.jenkins.dto.JenkinsJobDTO;

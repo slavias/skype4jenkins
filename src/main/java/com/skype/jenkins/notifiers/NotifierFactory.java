@@ -6,6 +6,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.skype.jenkins.Configuration;
 import com.skype.jenkins.dto.ConfigJobDTO.NotifyDTO;
 
 public class NotifierFactory {
