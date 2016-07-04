@@ -12,11 +12,12 @@ import com.skype.jenkins.dto.JenkinsJobDTO;
 import com.skype.jenkins.dto.JobResultEnum;
 
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 
 public class JenkinsRestHelper extends RestHelper {
 
-    private static Map<String,JenkinsRestHelper> jenkinsApi = new HashMap();
-    
+    private static Map<String, JenkinsRestHelper> jenkinsApi = new HashMap();
+
     private String jenkinsHostName;
 
     private JenkinsRestHelper(String jenkinsHostName) {
@@ -24,28 +25,29 @@ public class JenkinsRestHelper extends RestHelper {
     }
 
     public static synchronized JenkinsRestHelper getInstance(String jenkinsHost) {
-        if (Objects.isNull(jenkinsApi.get(jenkinsHost))){
+        if (Objects.isNull(jenkinsApi.get(jenkinsHost))) {
             jenkinsApi.put(jenkinsHost, new JenkinsRestHelper(jenkinsHost));
         }
         return jenkinsApi.get(jenkinsHost);
     }
-    
-    public  synchronized JenkinsJobDTO getJobInfo(String jobName) {
+
+    public synchronized JenkinsJobDTO getJobInfo(String jobName) {
         return getJobInfo(jobName, null);
     }
 
     public synchronized JenkinsJobDTO getJobInfo(String jobName, String buildNumber) {
         String url = prepareUrl(jobName, buildNumber, "info");
-        JenkinsJobDTO jj = JsonUtil.fromJson(
-                sendAndGetResponse(url, HttpMethod.GET, getHttpEntityWithHeaders()).getBody(), JenkinsJobDTO.class);
-        if (Objects.isNull(jj)) return null;
+        ResponseEntity<String> response = sendAndGetResponse(url, HttpMethod.GET, getHttpEntityWithHeaders());
+        if (Objects.isNull(response))
+            return null;
+        JenkinsJobDTO jj = JsonUtil.fromJson(response.getBody(), JenkinsJobDTO.class);
         if (jj.isBuilding()) {
             jj.setResult(JobResultEnum.IN_PROGRESS);
         }
         return jj;
     }
 
-    public  synchronized List<String> getJobConsole(String jobName) {
+    public synchronized List<String> getJobConsole(String jobName) {
         String buildNumber = null;
         String url = prepareUrl(jobName, buildNumber, "console");
         String jjc = sendAndGetResponse(url, HttpMethod.GET, getHttpEntityWithHeaders()).getBody();
@@ -53,18 +55,25 @@ public class JenkinsRestHelper extends RestHelper {
 
     }
 
-    public  synchronized String getJenkinsJobThucydides(String jobName, String buildNumber) {
+    public synchronized String getJenkinsJobThucydides(String jobName, String buildNumber) {
         String url = prepareUrl(jobName, buildNumber, "thucydides");
-        if (Objects.isNull(sendAndGetResponse(url, HttpMethod.GET, getHttpEntityWithHeaders())))   return "";
+        if (Objects.isNull(sendAndGetResponse(url, HttpMethod.GET, getHttpEntityWithHeaders())))
+            return "";
         return sendAndGetResponse(url, HttpMethod.GET, getHttpEntityWithHeaders()).getBody();
     }
 
-    public  synchronized String prepareUrl(String jobName, String buildNumber, String type) {
+    public synchronized String prepareUrl(String jobName, String buildNumber, String type) {
         String ending = "";
         switch (type) {
-            case "info": ending = "api/json";break;
-            case "console": ending = "consoleText"; break;
-            case "thucydides": ending = "thucydidesReport"; break;
+        case "info":
+            ending = "api/json";
+            break;
+        case "console":
+            ending = "consoleText";
+            break;
+        case "thucydides":
+            ending = "thucydidesReport";
+            break;
         }
         return String.join("/", "http://" + jenkinsHostName, "job", jobName,
                 Optional.ofNullable(buildNumber).orElse("lastBuild"), ending);
