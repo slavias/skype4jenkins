@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.skype.jenkins.Configuration;
 import javafx.util.Pair;
 
+import com.skype.jenkins.Configuration;
 import com.skype.jenkins.dto.JenkinsJobDTO;
 import com.skype.jenkins.dto.JobResultEnum;
 
@@ -29,11 +29,11 @@ public class NotifierEachBuildStatus extends Notifier implements INotifier {
             JenkinsJobDTO previousJenkinsJobDto = super.jenkinsApi.getJobInfo(super.jobName,
                     this.watchedBuildInfo.getKey());
             Optional.ofNullable(previousJenkinsJobDto).filter(dto -> dto.getResult().equals(JobResultEnum.IN_PROGRESS))
-                    .ifPresent((dto) -> addIfStatusPresentAtConfig(dto.getResult(), compose(dto), messages));
-            addIfStatusPresentAtConfig(currentBuildInfo.getValue(), compose(jenkinsJobDTO), messages);
+                    .ifPresent(dto -> addJenkinsResponseToSkypeBotMessages(dto, messages));
+            addJenkinsResponseToSkypeBotMessages(jenkinsJobDTO, messages);
 
         } else if (!Objects.equals(this.watchedBuildInfo.getValue(), currentBuildInfo.getValue())) {
-            addIfStatusPresentAtConfig(currentBuildInfo.getValue(), compose(jenkinsJobDTO), messages);
+            addJenkinsResponseToSkypeBotMessages(jenkinsJobDTO, messages);
         }
         watchedBuildInfo = currentBuildInfo;
         sendNotifications(messages);

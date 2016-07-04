@@ -37,14 +37,14 @@ public abstract class Notifier {
 
     protected void sendNotifications(final List<String> messages) {
         messages.forEach(notif -> SkypeHelper.sendSkype(notif, jobConfig.getInfo().getChatId()));
-    };
-
-    protected void addIfStatusPresentAtConfig(JobResultEnum status, String item, List<String> messages) {
-        if (Objects.nonNull(getNotifyStatus(status)))
-            messages.add(item);
     }
 
-    protected String compose(JenkinsJobDTO jobResult) {
+    protected void addJenkinsResponseToSkypeBotMessages(JenkinsJobDTO jenkinsJobDTO, List<String> messages) {
+        if (Objects.nonNull(getNotifyStatus(jenkinsJobDTO.getResult())))
+            messages.add(composeMessageFromJenkinsResponse(jenkinsJobDTO));
+    }
+
+    protected String composeMessageFromJenkinsResponse(JenkinsJobDTO jobResult) {
         StringBuilder textOutput = new StringBuilder();
         textOutput.append(publishBuildMessage(getNotifyStatus(jobResult.getResult()).getMessage()));
         textOutput.append(publishParameters(prepareAllParameters(jobResult)));

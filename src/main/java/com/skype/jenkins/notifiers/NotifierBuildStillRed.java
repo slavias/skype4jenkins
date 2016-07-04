@@ -28,7 +28,7 @@ public class NotifierBuildStillRed extends Notifier implements INotifier {
             this.watchedBuildInfo = currentBuildInfo;
         } else if (!this.watchedBuildInfo.getKey().equals(currentBuildInfo.getKey())
                 && this.watchedBuildInfo.getValue().equals(currentBuildInfo.getValue())) {
-            addIfStatusPresentAtConfig(jenkinsJobDTO.getResult(), compose(jenkinsJobDTO), messages);
+            addJenkinsResponseToSkypeBotMessages(jenkinsJobDTO, messages);
             watchedBuildInfo = currentBuildInfo;
         }
         sendNotifications(messages);
