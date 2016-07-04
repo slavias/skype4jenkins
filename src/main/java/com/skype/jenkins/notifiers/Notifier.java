@@ -2,6 +2,7 @@ package com.skype.jenkins.notifiers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.skype.jenkins.Configuration;
@@ -34,15 +35,16 @@ public abstract class Notifier {
 
     public abstract void composeSendNotifications();
 
-    public void sendNotifications(final List<String> messages) {
+    protected void sendNotifications(final List<String> messages) {
         messages.forEach(notif -> SkypeHelper.sendSkype(notif, jobConfig.getInfo().getChatId()));
     };
 
-    public ConfigJobDTO.NotifyStatusDto getNotifyStatus(JobResultEnum type) {
-        return jobConfig.getNotifierByType(notifierType).getNotifyStatusByType(type);
+    protected void addIfStatusPresentAtConfig(JobResultEnum status, String item, List<String> messages) {
+        if (Objects.nonNull(getNotifyStatus(status)))
+            messages.add(item);
     }
 
-    public String compose(JenkinsJobDTO jobResult) {
+    protected String compose(JenkinsJobDTO jobResult) {
         StringBuilder textOutput = new StringBuilder();
         textOutput.append(publishBuildMessage(getNotifyStatus(jobResult.getResult()).getMessage()));
         textOutput.append(publishParameters(prepareAllParameters(jobResult)));
@@ -52,14 +54,18 @@ public abstract class Notifier {
         return textOutput.toString();
     }
 
-    public String publishBuildMessage(String message) {
+    private ConfigJobDTO.NotifyStatusDto getNotifyStatus(JobResultEnum type) {
+        return jobConfig.getNotifierByType(notifierType).getNotifyStatusByType(type);
+    }
+
+    private String publishBuildMessage(String message) {
         StringBuilder textOutput = new StringBuilder();
         textOutput.append(message);
         Logger.out.debug(message);
         return textOutput.append("\n").toString();
     }
 
-    public List<ParametersDTO> prepareAllParameters(JenkinsJobDTO jobResult) {
+    private List<ParametersDTO> prepareAllParameters(JenkinsJobDTO jobResult) {
         List<ParametersDTO> parameters = new ArrayList<>();
         parameters.addAll(jobConfig.getDefaultParameters());
         parameters.addAll(jobConfig.getNotifierByType(notifierType).getParameters());
@@ -68,7 +74,7 @@ public abstract class Notifier {
         return parameters.stream().filter(par -> null != par.getValue()).collect(Collectors.toList());
     }
 
-    public String publishParameters(List<ParametersDTO> parameters) {
+    private String publishParameters(List<ParametersDTO> parameters) {
         StringBuilder textOutput = new StringBuilder();
         for (ParametersDTO param : parameters) {
             String paramMessage = (null == param.getMessage()) ? param.getName() + " : " + param.getValue()
@@ -79,7 +85,7 @@ public abstract class Notifier {
         return textOutput.toString();
     }
 
-    public String publishConsole(String text) {
+    private String publishConsole(String text) {
         StringBuilder textOutput = new StringBuilder();
         for (String finded : jenkinsApi.getJobConsole(jobName).stream().filter(line -> line.contains(text))
                 .collect(Collectors.toList())) {
@@ -89,7 +95,7 @@ public abstract class Notifier {
         return textOutput.toString();
     }
 
-    public String getThucydidesReport(final String buildNumber, final JobResultEnum result) {
+    private String getThucydidesReport(final String buildNumber, final JobResultEnum result) {
         StringBuilder thucydidesResult = new StringBuilder("");
         if (JobResultEnum.SUCCESS.equals(result) || JobResultEnum.UNSTABLE.equals(result)) {
             String report = jenkinsApi.getJenkinsJobThucydides(jobName, buildNumber);
@@ -108,5 +114,4 @@ public abstract class Notifier {
         Logger.out.debug(thucydidesResult);
         return thucydidesResult.toString();
     }
-
 }

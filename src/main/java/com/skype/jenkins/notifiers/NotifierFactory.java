@@ -13,7 +13,8 @@ public class NotifierFactory {
 
     public static List<INotifier> registerNotifiersForJob(final String jobName) {
         List<INotifier> neededNotifiers = new ArrayList<>();
-        Configuration conf = new Configuration(jobName);
+        Configuration conf = new Configuration();
+        conf.setJobName(jobName);
         for (NotifyDTO dto : conf.getJobConfig().getNotify()) {
             conf.setNotifierType(dto.getType());
             try {

@@ -38,9 +38,4 @@ public class NotifierEachBuildStatus extends Notifier implements INotifier {
         watchedBuildInfo = currentBuildInfo;
         sendNotifications(messages);
     }
-
-    private void addIfStatusPresentAtConfig(JobResultEnum status, String item, List<String> messages) {
-        if (Objects.nonNull(getNotifyStatus(status)))
-            messages.add(item);
-    }
 }
