@@ -4,15 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javafx.util.Pair;
-
 import com.skype.jenkins.Configuration;
 import com.skype.jenkins.dto.JenkinsJobDTO;
 import com.skype.jenkins.dto.JobResultEnum;
 
 public class NotifierBuildStillRed extends Notifier implements INotifier {
 
-    private Pair<String, JobResultEnum> watchedBuildInfo;
+    private JenkinsJobDTO watchedBuildDto;
 
     public NotifierBuildStillRed(Configuration configuration) {
         super(configuration);
@@ -20,16 +18,15 @@ public class NotifierBuildStillRed extends Notifier implements INotifier {
 
     public void composeSendNotifications() {
         List<String> messages = new ArrayList<>();
-        JenkinsJobDTO jenkinsJobDTO = super.jenkinsApi.getJobInfo(super.jobName);
-        Pair<String, JobResultEnum> currentBuildInfo = new Pair<>(jenkinsJobDTO.getNumber(), jenkinsJobDTO.getResult());
-        if (currentBuildInfo.getValue().equals(JobResultEnum.IN_PROGRESS))
+        JenkinsJobDTO currentBuildDto = super.jenkinsApi.getJobInfo(super.jobName);
+        if (currentBuildDto.getResult().equals(JobResultEnum.IN_PROGRESS))
             return;
-        if (Objects.isNull(this.watchedBuildInfo)) {
-            this.watchedBuildInfo = currentBuildInfo;
-        } else if (!this.watchedBuildInfo.getKey().equals(currentBuildInfo.getKey())
-                && this.watchedBuildInfo.getValue().equals(currentBuildInfo.getValue())) {
-            addJenkinsResponseToSkypeBotMessages(jenkinsJobDTO, messages);
-            watchedBuildInfo = currentBuildInfo;
+        if (Objects.isNull(this.watchedBuildDto)) {
+            this.watchedBuildDto = currentBuildDto;
+        } else if (!this.watchedBuildDto.getNumber().equals(currentBuildDto.getNumber())
+                && this.watchedBuildDto.getResult().equals(currentBuildDto.getResult())) {
+            addJenkinsResponseToSkypeBotMessages(currentBuildDto, messages);
+            watchedBuildDto = currentBuildDto;
         }
         sendNotifications(messages);
     }

@@ -5,14 +5,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import javafx.util.Pair;
-
 import com.skype.jenkins.Configuration;
 import com.skype.jenkins.dto.JenkinsJobDTO;
 import com.skype.jenkins.dto.JobResultEnum;
 
 public class NotifierEachBuildStatus extends Notifier implements INotifier {
-    private Pair<String, JobResultEnum> watchedBuildInfo;
+    private JenkinsJobDTO watchedBuildDto;
 
     public NotifierEachBuildStatus(Configuration configuration) {
         super(configuration);
@@ -20,22 +18,26 @@ public class NotifierEachBuildStatus extends Notifier implements INotifier {
 
     public void composeSendNotifications() {
         List<String> messages = new ArrayList<>();
-        JenkinsJobDTO jenkinsJobDTO = super.jenkinsApi.getJobInfo(super.jobName);
-        Pair<String, JobResultEnum> currentBuildInfo = new Pair<>(jenkinsJobDTO.getNumber(), jenkinsJobDTO.getResult());
-        if (Objects.isNull(this.watchedBuildInfo)) {
-            this.watchedBuildInfo = currentBuildInfo;
+        JenkinsJobDTO currentBuildDto = super.jenkinsApi.getJobInfo(super.jobName);
+        if (Objects.isNull(this.watchedBuildDto)) {
+            this.watchedBuildDto = currentBuildDto;
         }
-        if (!this.watchedBuildInfo.getKey().equals(currentBuildInfo.getKey())) {
-            JenkinsJobDTO previousJenkinsJobDto = super.jenkinsApi.getJobInfo(super.jobName,
-                    this.watchedBuildInfo.getKey());
-            Optional.ofNullable(previousJenkinsJobDto).filter(dto -> dto.getResult().equals(JobResultEnum.IN_PROGRESS))
-                    .ifPresent(dto -> addJenkinsResponseToSkypeBotMessages(dto, messages));
-            addJenkinsResponseToSkypeBotMessages(jenkinsJobDTO, messages);
+        if (!this.watchedBuildDto.getNumber().equals(currentBuildDto.getNumber())) {
+            if (watchedBuildDto.getResult().equals(JobResultEnum.IN_PROGRESS)) {
+                Optional.ofNullable(update(watchedBuildDto))
+                        .filter(dto -> !dto.getResult().equals(JobResultEnum.IN_PROGRESS))
+                        .ifPresent(dto -> addJenkinsResponseToSkypeBotMessages(dto, messages));
+            }
+            addJenkinsResponseToSkypeBotMessages(currentBuildDto, messages);
 
-        } else if (!Objects.equals(this.watchedBuildInfo.getValue(), currentBuildInfo.getValue())) {
-            addJenkinsResponseToSkypeBotMessages(jenkinsJobDTO, messages);
+        } else if (!Objects.equals(this.watchedBuildDto.getResult(), currentBuildDto.getResult())) {
+            addJenkinsResponseToSkypeBotMessages(currentBuildDto, messages);
         }
-        watchedBuildInfo = currentBuildInfo;
+        watchedBuildDto = currentBuildDto;
         sendNotifications(messages);
+    }
+
+    private JenkinsJobDTO update(JenkinsJobDTO dto) {
+        return super.jenkinsApi.getJobInfo(super.jobName, dto.getNumber());
     }
 }
