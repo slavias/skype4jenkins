@@ -100,10 +100,5 @@ public class JenkinsRestHelper {
         }
         return "";
     }
-    
-    public static void main(String[] args){
-        JenkinsRestHelper.getInstance("jenkins.fpos.kyiv.epam.com").getThucydidesUrl("08.2.6_ppe_run_suite", "24");
-        
-    }
 
 }
