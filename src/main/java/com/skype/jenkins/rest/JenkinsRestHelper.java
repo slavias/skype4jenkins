@@ -21,7 +21,7 @@ public class JenkinsRestHelper {
     private JenkinsExtendedHttpClient jenkinsClient;
 
     private JenkinsRestHelper(String jenkinsHostName) {
-        this.jenkinsClient = new JenkinsExtendedHttpClient("jenkins.fpos.kyiv.epam.com");
+        this.jenkinsClient = new JenkinsExtendedHttpClient(jenkinsHostName);
         this.jenkinsServer = new JenkinsServer(jenkinsClient);
     }
 
