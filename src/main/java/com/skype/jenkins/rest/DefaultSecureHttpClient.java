@@ -17,16 +17,17 @@ import com.skype.jenkins.logger.Logger;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 public final class DefaultSecureHttpClient {
 
-    private static HttpClient secureHttpClient;
+    private static CloseableHttpClient secureHttpClient;
 
     private DefaultSecureHttpClient() {
     }
 
-    public static synchronized HttpClient getSecureClient() {
+    public static synchronized CloseableHttpClient getSecureClient() {
         if (secureHttpClient == null) {
             createDefaultSSLClient();
             Logger.out.info("New rest client created (ignore certs, TLS)");

@@ -41,32 +41,14 @@
 			<version>${skype4j.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.offbytwo.jenkins</groupId>
+			<artifactId>jenkins-client</artifactId>
+			<version>0.3.5</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>${apache.httpcomponents.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-			<version>${spring-web.version}</version>
-			<exclusions>
-				<exclusion>  
-			    	<groupId>org.springframework</groupId>
-			    	<artifactId>spring-aop</artifactId>
-			    </exclusion>
-				<!-- <exclusion>  
-			    	<groupId>org.springframework</groupId>
-			    	<artifactId>spring-beans</artifactId>
-			    </exclusion> -->
-				<exclusion>  
-			    	<groupId>org.springframework</groupId>
-			    	<artifactId>spring-context</artifactId>
-			    </exclusion>
-				<exclusion>  
-			    	<groupId>org.springframework</groupId>
-			    	<artifactId>spring-expression</artifactId>
-			    </exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
             <groupId>com.google.code.gson</groupId>
