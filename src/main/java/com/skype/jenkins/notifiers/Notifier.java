@@ -49,7 +49,7 @@ public abstract class Notifier {
         textOutput.append(publishBuildMessage(getNotifyStatus(jobResult.getResult()).getMessage()));
         textOutput.append(publishParameters(prepareAllParameters(jobResult)));
         textOutput.append(publishConsole(getNotifyStatus(jobResult.getResult()).getLineFromLog()));
-        textOutput.append(jenkinsApi.getJobInfo(jobName).getUrl() + "\n");
+        textOutput.append(jobResult.getUrl() + "\n");
         textOutput.append(getThucydidesReport(jobResult.getNumber(), jobResult.getResult()));
         return textOutput.toString();
     }
@@ -70,7 +70,7 @@ public abstract class Notifier {
         parameters.addAll(jobConfig.getDefaultParameters());
         parameters.addAll(jobConfig.getNotifierByType(notifierType).getParameters());
         parameters.addAll(getNotifyStatus(jobResult.getResult()).getParameters());
-        parameters.stream().forEach(par -> par.setValue(jobResult.getParameterByName(par.getName()).getValue()));
+        parameters.forEach(par -> par.setValue(jobResult.getParameterByName(par.getName()).getValue()));
         return parameters.stream().filter(par -> null != par.getValue()).collect(Collectors.toList());
     }
 
