@@ -44,11 +44,11 @@ public abstract class Notifier {
             messages.add(composeMessageFromJenkinsResponse(jenkinsJobDTO));
     }
 
-    protected String composeMessageFromJenkinsResponse(JenkinsJobDTO jobResult) {
+    protected String composeMessageFromJenkinsResponse(final JenkinsJobDTO jobResult) {
         StringBuilder textOutput = new StringBuilder();
         textOutput.append(publishBuildMessage(getNotifyStatus(jobResult.getResult()).getMessage()));
         textOutput.append(publishParameters(prepareAllParameters(jobResult)));
-        textOutput.append(publishConsole(getNotifyStatus(jobResult.getResult()).getLineFromLog()));
+        textOutput.append(publishConsole(jobResult));
         textOutput.append(jobResult.getUrl() + "\n");
         textOutput.append(getThucydidesReport(jobResult.getNumber(), jobResult.getResult()));
         return textOutput.toString();
@@ -85,10 +85,11 @@ public abstract class Notifier {
         return textOutput.toString();
     }
 
-    private String publishConsole(String text) {
+    private String publishConsole(final JenkinsJobDTO jobResult) {
         StringBuilder textOutput = new StringBuilder();
-        for (String finded : jenkinsApi.getJobConsole(jobName).stream().filter(line -> line.contains(text))
-                .collect(Collectors.toList())) {
+        String text = getNotifyStatus(jobResult.getResult()).getLineFromLog();
+        for (String finded : jenkinsApi.getJobConsole(jobResult.getNumber(), jobName).stream()
+                .filter(line -> line.contains(text)).collect(Collectors.toList())) {
             textOutput.append(finded).append("\n");
         }
         Logger.out.debug(textOutput);

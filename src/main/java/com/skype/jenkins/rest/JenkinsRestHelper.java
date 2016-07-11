@@ -47,8 +47,7 @@ public class JenkinsRestHelper extends RestHelper {
         return jj;
     }
 
-    public synchronized List<String> getJobConsole(String jobName) {
-        String buildNumber = null;
+    public synchronized List<String> getJobConsole(final String buildNumber, final String jobName) {
         String url = prepareUrl(jobName, buildNumber, "console");
         String jjc = sendAndGetResponse(url, HttpMethod.GET, getHttpEntityWithHeaders()).getBody();
         return Arrays.asList(jjc.split("\\n"));
