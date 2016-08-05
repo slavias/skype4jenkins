@@ -3,12 +3,12 @@ package com.skype.jenkins.dto;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
-import com.skype.jenkins.notifiers.NotifierAborted;
-import com.skype.jenkins.notifiers.NotifierBackNormal;
-import com.skype.jenkins.notifiers.NotifierFailure;
-import com.skype.jenkins.notifiers.NotifierStart;
-import com.skype.jenkins.notifiers.NotifierStillRed;
-import com.skype.jenkins.notifiers.NotifierSuccess;
+import com.skype.jenkins.notifiers.types.NotifierAborted;
+import com.skype.jenkins.notifiers.types.NotifierBackNormal;
+import com.skype.jenkins.notifiers.types.NotifierFailure;
+import com.skype.jenkins.notifiers.types.NotifierStart;
+import com.skype.jenkins.notifiers.types.NotifierStillRed;
+import com.skype.jenkins.notifiers.types.NotifierSuccess;
 
 public enum NotifyTypeEnum {
     start(NotifierStart.class),

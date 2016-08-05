@@ -63,8 +63,8 @@ public abstract class Notifier {
         List<ParametersDTO> parameters = new ArrayList<>();
         parameters.addAll(jobConfig.getDefaultParameters());
         parameters.addAll(jobConfig.getNotifierByType(NotifyTypeEnum.getNotifierByClass(this.getClass())).getParameters());
-        parameters.stream().forEach(par -> par.setValue(jobResult.getParameters().get(par.getName())));
-        return parameters.stream().filter(par -> null != par.getValue()).collect(Collectors.toList());
+        return parameters.stream().peek(par -> par.setValue(jobResult.getParameters().get(par.getName())))
+                .filter(par -> null != par.getValue()).collect(Collectors.toList());
     }
 
     private String publishParameters(final List<ParametersDTO> parameters) {

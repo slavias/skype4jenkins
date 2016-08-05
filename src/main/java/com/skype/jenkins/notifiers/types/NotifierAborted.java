@@ -1,4 +1,4 @@
-package com.skype.jenkins.notifiers;
+package com.skype.jenkins.notifiers.types;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,14 +6,16 @@ import java.util.List;
 import com.offbytwo.jenkins.model.BuildResult;
 import com.offbytwo.jenkins.model.BuildWithDetails;
 import com.skype.jenkins.dto.ConfigJobDTO;
+import com.skype.jenkins.dto.NotifyTypeEnum;
+import com.skype.jenkins.notifiers.Notifier;
 import com.skype.jenkins.rest.JenkinsRestHelper;
 
-public class NotifierBackNormal extends Notifier {
+public class NotifierAborted extends Notifier {
 
     private int buildNumber;
     private BuildResult buildResult;
 
-    public NotifierBackNormal(final String jenkinsUrl, final ConfigJobDTO jobConfig){
+    public NotifierAborted(final String jenkinsUrl, final ConfigJobDTO jobConfig){
         super(jenkinsUrl, jobConfig);
         buildNumber = JenkinsRestHelper.getInstance(super.jenkinsUrl).getJob(super.jobConfig.getInfo().getJobName()).getLastCompletedBuild().getNumber();
         buildResult = JenkinsRestHelper.getInstance(super.jenkinsUrl).getJobInfo(super.jobConfig.getInfo().getJobName(),buildNumber).getResult();
@@ -27,8 +29,10 @@ public class NotifierBackNormal extends Notifier {
         while (buildNumber < currentNumber){
             buildNumber++;
             BuildWithDetails watchedBuild = JenkinsRestHelper.getInstance(jenkinsUrl).getJobInfo(super.jobConfig.getInfo().getJobName(), buildNumber);
-            if (watchedBuild.getResult().equals(BuildResult.SUCCESS) && buildResult.equals(BuildResult.FAILURE)) {
-                addJenkinsResponseToSkypeBotMessages(watchedBuild, messages);
+            if (watchedBuild.getResult().equals(BuildResult.ABORTED)) {
+                if (!(buildResult.equals(BuildResult.ABORTED) && jobConfig.getNotifierByType(NotifyTypeEnum.getNotifierByClass(this.getClass())).isOnce())) {
+                    addJenkinsResponseToSkypeBotMessages(watchedBuild, messages);
+                }
             }
             buildResult=watchedBuild.getResult();
         }

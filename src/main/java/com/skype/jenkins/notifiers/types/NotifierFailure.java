@@ -1,4 +1,4 @@
-package com.skype.jenkins.notifiers;
+package com.skype.jenkins.notifiers.types;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,7 @@ import com.offbytwo.jenkins.model.BuildResult;
 import com.offbytwo.jenkins.model.BuildWithDetails;
 import com.skype.jenkins.dto.ConfigJobDTO;
 import com.skype.jenkins.dto.NotifyTypeEnum;
+import com.skype.jenkins.notifiers.Notifier;
 import com.skype.jenkins.rest.JenkinsRestHelper;
 
 public class NotifierFailure extends Notifier {
