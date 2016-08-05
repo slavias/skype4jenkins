@@ -8,9 +8,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.offbytwo.jenkins.JenkinsServer;
-import com.skype.jenkins.JsonUtil;
-import com.skype.jenkins.dto.JenkinsJobDTO;
-import com.skype.jenkins.dto.JobResultEnum;
+import com.offbytwo.jenkins.model.BuildWithDetails;
+import com.offbytwo.jenkins.model.JobWithDetails;
 import com.skype.jenkins.logger.Logger;
 
 public class JenkinsRestHelper {
@@ -20,90 +19,72 @@ public class JenkinsRestHelper {
     private JenkinsServer jenkinsServer;
     private JenkinsExtendedHttpClient jenkinsClient;
 
-    private JenkinsRestHelper(String jenkinsHostName) {
-        this.jenkinsClient = new JenkinsExtendedHttpClient("jenkins.fpos.kyiv.epam.com");
+    private JenkinsRestHelper(final String jenkinsHostName) {
+        this.jenkinsClient = new JenkinsExtendedHttpClient(jenkinsHostName);
         this.jenkinsServer = new JenkinsServer(jenkinsClient);
     }
 
-    public static synchronized JenkinsRestHelper getInstance(String jenkinsHost) {
+    public static synchronized JenkinsRestHelper getInstance(final String jenkinsHost) {
         if (Objects.isNull(jenkinsApi.get(jenkinsHost))) {
             jenkinsApi.put(jenkinsHost, new JenkinsRestHelper(jenkinsHost));
         }
         return jenkinsApi.get(jenkinsHost);
     }
-    
 
-    public synchronized JenkinsJobDTO getJobInfo(String jobName) {
-        int number = 0;
+    public synchronized JobWithDetails getJob(final String jobName) {
+        JobWithDetails job = null;
         try {
-            number = jenkinsServer.getJob(jobName).getLastBuild().getNumber();
+            job = jenkinsServer.getJob(jobName);
         } catch (IOException e) {
             Logger.out.error(e);
         }
-        
-        return getJobInfo(jobName, number);
+        return job;
     }
 
-    @Deprecated
-    public synchronized JenkinsJobDTO getJobInfo(String jobName, String buildNumber) {
-        return getJobInfo(jobName, Integer.parseInt(buildNumber));
-    }
-
-    public synchronized JenkinsJobDTO getJobInfo(String jobName, int buildNumber) {
-
-        JenkinsJobDTO jj = null;
+    public synchronized BuildWithDetails getJobInfo(final String jobName) {
+        BuildWithDetails job = null;
         try {
-            jj = JsonUtil.fromJson(
-                    jenkinsClient.get(jenkinsServer.getJob(jobName).getBuildByNumber(buildNumber).getUrl()),
-                    JenkinsJobDTO.class);
+            job = getJob(jobName).getLastBuild().details();
         } catch (IOException e) {
             Logger.out.error(e);
         }
-        if (jj.isBuilding()) {
-            jj.setResult(JobResultEnum.IN_PROGRESS);
-        }
-        return jj;
+        return job;
     }
 
-    public synchronized List<String> getJobConsole(String jobName) {
-        String jjc = "";
+    public synchronized BuildWithDetails getJobInfo(final String jobName, final int buildNumber) {
+        BuildWithDetails job = null;
         try {
-            jjc = jenkinsServer.getJob(jobName).getLastBuild().details().getConsoleOutputText();
+            job = getJob(jobName).getBuildByNumber(buildNumber).details();
         } catch (IOException e) {
             Logger.out.error(e);
         }
-        return Arrays.asList(jjc.split("\\n"));
+        return job;
     }
 
-    @Deprecated
-    public synchronized String getJenkinsJobThucydides(String jobName, String buildNumber) {
-        return getJenkinsJobThucydides(jobName, Integer.parseInt(buildNumber));
+    public synchronized List<String> getJobConsole(final String jobName) {
+        String jobConsole = "";
+        try {
+            jobConsole = jenkinsServer.getJob(jobName).getLastBuild().details().getConsoleOutputText();
+        } catch (IOException e) {
+            Logger.out.error(e);
+        }
+        return Arrays.asList(jobConsole.split("\\n"));
     }
-    
-    public synchronized String getJenkinsJobThucydides(String jobName, int buildNumber) {
-        
+
+    public synchronized String getJenkinsJobThucydides(final String jobName, final int buildNumber) {
+
         String response = "";
         try {
-            response = jenkinsClient.get(jenkinsServer.getJob(jobName).getBuildByNumber(buildNumber).getUrl()+"/thucydidesReport");
+            response = jenkinsClient.get(getThucydidesUrl(jobName, buildNumber));
         } catch (IOException e) {
             Logger.out.error(e);
         }
-        
+
         return response;
     }
-    
-    public String getThucydidesUrl(String jobName, String buildNumber) {
-        try {
-            return jenkinsServer.getJob(jobName).getBuildByNumber(Integer.parseInt(buildNumber)).getUrl()+"thucydidesReport";
-        } catch (IOException e) {
-            Logger.out.error(e);
-        }
-        return "";
-    }
-    
-    public static void main(String[] args){
-        JenkinsRestHelper.getInstance("jenkins.fpos.kyiv.epam.com").getThucydidesUrl("08.2.6_ppe_run_suite", "24");
-        
+
+    public String getThucydidesUrl(final String jobName, final int buildNumber) {
+        return getJob(jobName).getBuildByNumber(buildNumber).getUrl() + "thucydidesReport";
     }
 
 }

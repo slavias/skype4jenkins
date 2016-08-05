@@ -21,7 +21,7 @@ public class ConfigJobDTO {
         return info;
     }
 
-    public void setInfo(InfoDTO info) {
+    public void setInfo(final InfoDTO info) {
         this.info = info;
     }
 
@@ -29,7 +29,7 @@ public class ConfigJobDTO {
         return notify;
     }
 
-    public void setNotify(List<NotifyDTO> notify) {
+    public void setNotify(final List<NotifyDTO> notify) {
         this.notify = notify;
     }
 
@@ -37,11 +37,11 @@ public class ConfigJobDTO {
         return Optional.ofNullable(defaultParameters).orElseGet(ArrayList::new);
     }
 
-    public void setDefaultParameters(List<ParametersDTO> defaultParameters) {
+    public void setDefaultParameters(final List<ParametersDTO> defaultParameters) {
         this.defaultParameters = defaultParameters;
     }
 
-    public NotifyDTO getNotifierByType(NotifyTypeEnum type) {
+    public NotifyDTO getNotifierByType(final NotifyTypeEnum type) {
         return getNotify().stream().filter(notifier -> type.equals(notifier.getType())).findAny().orElseGet(null);
     }
 
@@ -64,7 +64,7 @@ public class ConfigJobDTO {
             return name;
         }
 
-        public void setName(String name) {
+        public void setName(final String name) {
             this.name = name;
         }
 
@@ -72,7 +72,7 @@ public class ConfigJobDTO {
             return jobName;
         }
 
-        public void setJobName(String jobName) {
+        public void setJobName(final String jobName) {
             this.jobName = jobName;
         }
 
@@ -80,7 +80,7 @@ public class ConfigJobDTO {
             return timeout;
         }
 
-        public void setTimeout(int timeout) {
+        public void setTimeout(final int timeout) {
             this.timeout = timeout;
         }
 
@@ -88,7 +88,7 @@ public class ConfigJobDTO {
             return onTime;
         }
 
-        public void setOnTime(String onTime) {
+        public void setOnTime(final String onTime) {
             this.onTime = onTime;
         }
 
@@ -96,7 +96,7 @@ public class ConfigJobDTO {
             return onDate;
         }
 
-        public void setOnDate(String onDate) {
+        public void setOnDate(final String onDate) {
             this.onDate = onDate;
         }
 
@@ -104,7 +104,7 @@ public class ConfigJobDTO {
             return chatId;
         }
 
-        public void setChatId(String chatId) {
+        public void setChatId(final String chatId) {
             this.chatId = chatId;
         }
     }
@@ -114,16 +114,18 @@ public class ConfigJobDTO {
         private NotifyTypeEnum type;
         @SerializedName("parameters")
         private List<ParametersDTO> parameters;
-        @SerializedName("status")
-        private List<NotifyStatusDto> status;
         @SerializedName("message")
         private String message;
+        @SerializedName("lineFromLog")
+        private String lineFromLog;
+        @SerializedName("once")
+        private boolean once;
 
         public NotifyTypeEnum getType() {
             return type;
         }
 
-        public void setType(NotifyTypeEnum type) {
+        public void setType(final NotifyTypeEnum type) {
             this.type = type;
         }
 
@@ -131,82 +133,34 @@ public class ConfigJobDTO {
             return Optional.ofNullable(parameters).orElseGet(ArrayList::new);
         }
 
-        public void setParameters(List<ParametersDTO> parameters) {
+        public void setParameters(final List<ParametersDTO> parameters) {
             this.parameters = parameters;
-        }
-
-        public List<NotifyStatusDto> getStatus() {
-            return status;
-        }
-
-        public void setStatus(List<NotifyStatusDto> status) {
-            this.status = status;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
-
-        public NotifyStatusDto getNotifyStatusByType(JobResultEnum type) {
-            return getStatus().stream().filter(notifier -> type.equals(notifier.getType())).findAny().orElse(null);
-        }
-    }
-
-    public class NotifyStatusDto {
-        @SerializedName("type")
-        private JobResultEnum type;
-        @SerializedName("message")
-        private String message;
-        @SerializedName("parameters")
-        private List<ParametersDTO> parameters;
-        @SerializedName("timeout")
-        private String timeout;
-        @SerializedName("lineFromLog")
-        private String lineFromLog;
-
-        public JobResultEnum getType() {
-            return type;
-        }
-
-        public void setType(JobResultEnum type) {
-            this.type = type;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
-
-        public List<ParametersDTO> getParameters() {
-            return Optional.ofNullable(parameters).orElseGet(ArrayList::new);
-        }
-
-        public void setParameters(List<ParametersDTO> parameters) {
-            this.parameters = parameters;
-        }
-
-        public String getTimeout() {
-            return timeout;
-        }
-
-        public void setTimeout(String timeout) {
-            this.timeout = timeout;
         }
 
         public String getLineFromLog() {
             return lineFromLog;
         }
 
-        public void setLineFromLog(String lineFromLog) {
+        public void setLineFromLog(final String lineFromLog) {
             this.lineFromLog = lineFromLog;
         }
 
+        public boolean isOnce() {
+            return once;
+        }
+
+        public void setOnce(final boolean once) {
+            this.once = once;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(final String message) {
+            this.message = message;
+        }
+
     }
+
 }

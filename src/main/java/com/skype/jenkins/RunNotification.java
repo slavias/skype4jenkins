@@ -30,15 +30,16 @@ public class RunNotification {
         return Optional.ofNullable(configData).orElseGet(RunNotification::initConfData);
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         SkypeHelper.getSkype();
         ScheduledExecutorService service = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
-        getConfiguration().stream().flatMap(allConfiguration -> allConfiguration.getJobs().stream())
-                .forEach(jobConfig -> service.scheduleWithFixedDelay(new JobThread(jobConfig.getInfo().getJobName()), 1,
-                        jobConfig.getInfo().getTimeout(), TimeUnit.SECONDS));
+        getConfiguration().stream().forEach(
+                allConf -> allConf.getJobs().forEach(
+                        jobConf -> service.scheduleWithFixedDelay(new JobThread(allConf.getJenkinsUrl(), jobConf), 1,
+                                jobConf.getInfo().getTimeout(), TimeUnit.SECONDS)));
     }
 
-    public static ConfigDTO parseConfigFile(String configName) {
+    public static ConfigDTO parseConfigFile(final String configName) {
         Logger.out.info("parse config file: " + configName);
         StringBuilder fileInline = new StringBuilder();
         try {

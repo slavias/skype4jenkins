@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.gson.annotations.SerializedName;
 import com.skype.jenkins.dto.JenkinsJobDTO.ActionsDto.CausesDto;
 
+@Deprecated
 public class JenkinsJobDTO {
 
     @SerializedName("actions")
@@ -34,7 +35,7 @@ public class JenkinsJobDTO {
         return actions;
     }
 
-    public void setActions(List<ActionsDto> actions) {
+    public void setActions(final List<ActionsDto> actions) {
         this.actions = actions;
     }
 
@@ -42,7 +43,7 @@ public class JenkinsJobDTO {
         return number;
     }
 
-    public void setNumber(String number) {
+    public void setNumber(final String number) {
         this.number = number;
     }
 
@@ -50,7 +51,7 @@ public class JenkinsJobDTO {
         return building;
     }
 
-    public void setBuilding(boolean building) {
+    public void setBuilding(final boolean building) {
         this.building = building;
     }
 
@@ -58,7 +59,7 @@ public class JenkinsJobDTO {
         return result;
     }
 
-    public void setResult(JobResultEnum result) {
+    public void setResult(final JobResultEnum result) {
         this.result = result;
     }
 
@@ -66,7 +67,7 @@ public class JenkinsJobDTO {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(final String url) {
         this.url = url;
     }
 
@@ -74,7 +75,7 @@ public class JenkinsJobDTO {
         return displayName;
     }
 
-    public void setDisplayName(String displayName) {
+    public void setDisplayName(final String displayName) {
         this.displayName = displayName;
     }
 
@@ -82,7 +83,7 @@ public class JenkinsJobDTO {
         return fullDisplayName;
     }
 
-    public void setFullDisplayName(String fullDisplayName) {
+    public void setFullDisplayName(final String fullDisplayName) {
         this.fullDisplayName = fullDisplayName;
     }
 
@@ -91,7 +92,7 @@ public class JenkinsJobDTO {
                 .map(act -> act.getParameters()).orElse(new ArrayList<>());
     }
 
-    public ParametersDTO getParameterByName(String name) {
+    public ParametersDTO getParameterByName(final String name) {
         return getParameters().stream().filter(param -> name.equals(param.getName())).findFirst()
                 .orElseGet(ParametersDTO::new);
     }
@@ -112,7 +113,7 @@ public class JenkinsJobDTO {
             return parameters;
         }
 
-        public void setParameters(List<ParametersDTO> parameters) {
+        public void setParameters(final List<ParametersDTO> parameters) {
             this.parameters = parameters;
         }
 
@@ -120,7 +121,7 @@ public class JenkinsJobDTO {
             return causes;
         }
 
-        public void setCauses(List<CausesDto> causes) {
+        public void setCauses(final List<CausesDto> causes) {
             this.causes = causes;
         }
 
@@ -141,7 +142,7 @@ public class JenkinsJobDTO {
                 return shortDescription;
             }
 
-            public void setShortDescription(String shortDescription) {
+            public void setShortDescription(final String shortDescription) {
                 this.shortDescription = shortDescription;
             }
 
@@ -149,7 +150,7 @@ public class JenkinsJobDTO {
                 return userId;
             }
 
-            public void setUserId(String userId) {
+            public void setUserId(final String userId) {
                 this.userId = userId;
             }
 
@@ -157,7 +158,7 @@ public class JenkinsJobDTO {
                 return userName;
             }
 
-            public void setUserName(String userName) {
+            public void setUserName(final String userName) {
                 this.userName = userName;
             }
 
@@ -165,7 +166,7 @@ public class JenkinsJobDTO {
                 return upstreamBuild;
             }
 
-            public void setUpstreamBuild(int upstreamBuild) {
+            public void setUpstreamBuild(final int upstreamBuild) {
                 this.upstreamBuild = upstreamBuild;
             }
 
@@ -173,7 +174,7 @@ public class JenkinsJobDTO {
                 return upstreamProject;
             }
 
-            public void setUpstreamProject(String upstreamProject) {
+            public void setUpstreamProject(final String upstreamProject) {
                 this.upstreamProject = upstreamProject;
             }
         }

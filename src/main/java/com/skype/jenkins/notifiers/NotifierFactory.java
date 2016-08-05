@@ -6,22 +6,19 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.skype.jenkins.Configuration;
+import com.skype.jenkins.dto.ConfigJobDTO;
 import com.skype.jenkins.dto.ConfigJobDTO.NotifyDTO;
 
 public class NotifierFactory {
 
-    public static List<INotifier> registerNotifiersForJob(final String jobName) {
-        List<INotifier> neededNotifiers = new ArrayList<>();
-        Configuration conf = new Configuration();
-        conf.setJobName(jobName);
-        for (NotifyDTO dto : conf.getJobConfig().getNotify()) {
-            conf.setNotifierType(dto.getType());
+    public static List<Notifier> registerNotifiersForJob(final String jenkinsUrl, final ConfigJobDTO jobConfig) {
+        List<Notifier> neededNotifiers = new ArrayList<>();
+        for (NotifyDTO dto : jobConfig.getNotify()) {
             try {
                 Type clazz = dto.getType().getImplementingClass();
-                Constructor<?> ctor = Class.forName(clazz.getTypeName()).getConstructor(Configuration.class);
-                Object object = ctor.newInstance(conf);
-                neededNotifiers.add((INotifier) object);
+                Constructor<?> ctor = Class.forName(clazz.getTypeName()).getConstructor(String.class, ConfigJobDTO.class);
+                Object object = ctor.newInstance(jenkinsUrl, jobConfig);
+                neededNotifiers.add((Notifier) object);
             } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException
                     | InvocationTargetException e) {
                 e.printStackTrace();
