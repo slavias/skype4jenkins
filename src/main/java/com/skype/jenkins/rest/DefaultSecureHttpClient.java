@@ -7,6 +7,9 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -14,9 +17,10 @@ import javax.net.ssl.X509TrustManager;
 
 import com.skype.jenkins.logger.Logger;
 
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.CookieStore;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
@@ -53,6 +57,7 @@ public final class DefaultSecureHttpClient {
         HttpClientBuilder builder = HttpClientBuilder.create();
 
         builder.setSSLSocketFactory(secureSocketFactory);
+        builder.setDefaultCookieStore(new CustomCookieStore());
         secureHttpClient = builder.build();
     }
 
@@ -79,5 +84,32 @@ public final class DefaultSecureHttpClient {
             return new X509Certificate[0];
         }
 
+    }
+
+    public static class CustomCookieStore implements CookieStore {
+
+        @Override
+        public void addCookie(final Cookie cookie) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public List<Cookie> getCookies() {
+            // TODO Auto-generated method stub
+            return new ArrayList<Cookie>();
+        }
+
+        @Override
+        public boolean clearExpired(final Date date) {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public void clear() {
+            // TODO Auto-generated method stub
+
+        }
     }
 }
