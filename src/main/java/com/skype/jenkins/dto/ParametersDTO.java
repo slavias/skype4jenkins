@@ -8,25 +8,26 @@ public class ParametersDTO {
     private String name;
     @SerializedName("value")
     private String value;
+    // use custom text with "%s" for value
     @SerializedName("message")
     private String message;
-    
+
     public String getName() {
         return name;
     }
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
     public String getValue() {
         return value;
     }
-    public void setValue(String value) {
+    public void setValue(final String value) {
         this.value = value;
     }
     public String getMessage() {
         return message;
     }
-    public void setMessage(String message) {
+    public void setMessage(final String message) {
         this.message = message;
     }
 }

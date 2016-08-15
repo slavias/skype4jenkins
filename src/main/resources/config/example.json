@@ -1,12 +1,11 @@
 {
 	"jenkinsUrl": "<jenkins host (with protocol and port)>",
-	"jobs":[
+	"jobs": [
 		{
-			"info":{
+			"info": {
 				"name": "<custom thread name>",
 				"jobName": "<job name>",
 				"chatId": "<skype : /get name>"
-
 			},
 			"defaultParameters": [
 				{
@@ -14,38 +13,36 @@
 					"message": "Config file is %s"
 				}
 			],
-			"notify":[
-			
-			{
-						"type": "start",
-					"message" : "some buildStart text",
+			"notify": [
+				{
+					"type": "start",
+					"message": "some buildStart text",
 					"loneFromLog": "Started by"
 				},
 				{
 					"type": "failure",
-					"once": false,
-					"message" : "some buildFailure text"
+					"once": true,
+					"message": "some buildFailure text"
 				},
 				{
 					"type": "success",
-					"once": true,
-					"message" : "some buildSuccess text"
+					"once": false,
+					"message": "some buildSuccess text"
 				},
 				{
 					"type": "aborted",
 					"once": false,
-					"message" : "some buildAborted text",
+					"message": "some buildAborted text",
 					"lineFromLog": "Aborted by"
 				},
 				{
 					"type": "stillRed",
-					"message" : "some buildStillRed text"
+					"message": "some buildStillRed text"
 				},
 				{
 					"type": "backNormal",
-					"message" : "some buildBackNormal text"
+					"message": "some buildBackNormal text"
 				}
-			
 			]
 		}
 	]

@@ -116,8 +116,10 @@ public class ConfigJobDTO {
         private List<ParametersDTO> parameters;
         @SerializedName("message")
         private String message;
+        //proposed to use with "Aborted by" or "Started by" value
         @SerializedName("lineFromLog")
         private String lineFromLog;
+        //if true - do not notify of dublicated status (only for success, failure, aborted)
         @SerializedName("once")
         private boolean once;
 

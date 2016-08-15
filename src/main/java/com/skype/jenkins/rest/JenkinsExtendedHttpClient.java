@@ -14,6 +14,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 
+//used for custom rest for thucydides(serenity) report
 public class JenkinsExtendedHttpClient extends JenkinsHttpClient {
 
     private CloseableHttpClient client;
@@ -33,7 +34,7 @@ public class JenkinsExtendedHttpClient extends JenkinsHttpClient {
     private static URI prepareUri(final String jenkinsHost) {
         URI uri = null;
         try {
-            uri = new URI(jenkinsHost);// +"/jenkins");
+            uri = new URI(jenkinsHost);
         } catch (URISyntaxException e) {
             Logger.out.error(e);
         }

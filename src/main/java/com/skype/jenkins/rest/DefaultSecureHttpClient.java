@@ -90,25 +90,33 @@ public final class DefaultSecureHttpClient {
 
         @Override
         public void addCookie(final Cookie cookie) {
-            // TODO Auto-generated method stub
+            /*
+             * This method does not need to be implemented.
+             */
 
         }
 
         @Override
         public List<Cookie> getCookies() {
-            // TODO Auto-generated method stub
+            /*
+             * This method does not need to be implemented.
+             */
             return new ArrayList<Cookie>();
         }
 
         @Override
         public boolean clearExpired(final Date date) {
-            // TODO Auto-generated method stub
+            /*
+             * This method does not need to be implemented.
+             */
             return false;
         }
 
         @Override
         public void clear() {
-            // TODO Auto-generated method stub
+            /*
+             * This method does not need to be implemented.
+             */
 
         }
     }
