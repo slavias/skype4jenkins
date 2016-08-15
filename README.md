@@ -25,7 +25,7 @@ config file #2 has property  "jenkinsUrl": "host2" and description of jobs C and
 
 
 Example of config is attached below:
-
+```
 {
 	"jenkinsUrl": "<jenkins host (with protocol and port)>", 
 	"jobs": [
@@ -80,3 +80,4 @@ Example of config is attached below:
 		}
 	]
 }
+```
