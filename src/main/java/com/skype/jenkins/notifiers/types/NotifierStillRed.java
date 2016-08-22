@@ -9,6 +9,7 @@ import com.skype.jenkins.dto.ConfigJobDTO;
 import com.skype.jenkins.notifiers.Notifier;
 import com.skype.jenkins.rest.JenkinsRestHelper;
 
+//TODO add logic to check after aborted and failure
 public class NotifierStillRed extends Notifier {
 
     private int buildNumber;

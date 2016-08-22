@@ -30,6 +30,7 @@ public class RunNotification {
         return Optional.ofNullable(configData).orElseGet(RunNotification::initConfData);
     }
 
+    //TODO implement message on time
     public static void main(final String[] args) throws Exception {
         SkypeHelper.getSkype();
         ScheduledExecutorService service = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
