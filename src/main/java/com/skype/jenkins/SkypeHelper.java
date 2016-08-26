@@ -54,7 +54,7 @@ public class SkypeHelper {
             illegalStateException = null;
             try {
                 GroupChat groupChat = (GroupChat) getSkype().getOrLoadChat(chatName);
-                Logger.out.info("SEND TO SKYPE: " + chatName + "\n" + message);
+                Logger.out.info("SEND TO SKYPE: " + chatName + "(" + groupChat.getTopic() + ")\n" + message);
                 groupChat.sendMessage(message);
             } catch (IllegalStateException ex) {
                 illegalStateException = ex;
