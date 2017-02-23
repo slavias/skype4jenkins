@@ -41,26 +41,20 @@ public class JenkinsExtendedHttpClient extends JenkinsHttpClient {
         return uri;
     }
 
-    @Override
-    public String get(final String path) throws IOException {
-        if (!path.contains("thucydides")) {
-            return super.get(path);
-        } else {
+    public String getSerenityReport(final String path) throws IOException {
+        try {
+            HttpGet getMethod = new HttpGet(new URI(path));
+            HttpResponse response = client.execute(getMethod);
+
             try {
-                HttpGet getMethod = new HttpGet(new URI(path));
-                HttpResponse response = client.execute(getMethod);
-
-                try {
-                    httpResponseValidator.validateResponse(response);
-                    return IOUtils.toString(response.getEntity().getContent());
-                } finally {
-                    EntityUtils.consume(response.getEntity());
-                    getMethod.releaseConnection();
-                }
-            } catch (URISyntaxException e) {
-                Logger.out.error(e);
+                httpResponseValidator.validateResponse(response);
+                return IOUtils.toString(response.getEntity().getContent());
+            } finally {
+                EntityUtils.consume(response.getEntity());
+                getMethod.releaseConnection();
             }
-
+        } catch (URISyntaxException e) {
+            Logger.out.error(e);
         }
         return null;
     }

@@ -94,7 +94,7 @@ public class SkypeHelper {
                 output.append("//stop").append("\n");
                 output.append("//start").append("\n");
                 output.append("//reload(restart) - reload config file").append("\n");
-                output.append("//status - reload config file").append("\n");
+                output.append("//status").append("\n");
                 break;
             case "jobs":
                 output.append(RunNotification.getConfiguration().stream().flatMap(conf -> conf.getJobs().stream()).map(jobConf -> jobConf.getInfo().getJobName()).collect(Collectors.joining("\n")));

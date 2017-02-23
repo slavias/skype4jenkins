@@ -51,6 +51,8 @@ public class ConfigJobDTO {
         private String name;
         @SerializedName("jobName")
         private String jobName;
+        @SerializedName("serenityReportName")
+        private String serenityReportName;
         @SerializedName("timeout")
         private int timeout;
         @SerializedName("onTime")
@@ -74,6 +76,14 @@ public class ConfigJobDTO {
 
         public void setJobName(final String jobName) {
             this.jobName = jobName;
+        }
+
+        public String getSerenityReportName() {
+            return Optional.ofNullable(serenityReportName).orElse("thucydidesReport");
+        }
+
+        public void setSerenityReportName(final String serenityReportName) {
+            this.serenityReportName = serenityReportName;
         }
 
         public int getTimeout() {

@@ -64,18 +64,22 @@ public class JenkinsRestHelper {
     public synchronized List<String> getJobConsole(final String jobName) {
         String jobConsole = "";
         try {
-            jobConsole = jenkinsServer.getJob(jobName).getLastBuild().details().getConsoleOutputText();
+            jobConsole = getJob(jobName).getLastBuild().details().getConsoleOutputText();
         } catch (IOException e) {
             Logger.out.error(e);
         }
         return Arrays.asList(jobConsole.split("\\n"));
     }
 
-    public synchronized String getJenkinsJobThucydides(final String jobName, final int buildNumber) {
+    public synchronized String getJenkinsJobSerenity(final String jobName, final int buildNumber) {
+        return getJenkinsJobSerenity(jobName, buildNumber, "thucydidesReport");
+    }
 
+    public synchronized String getJenkinsJobSerenity(final String jobName, final int buildNumber,
+            final String reportName) {
         String response = "";
         try {
-            response = jenkinsClient.get(getThucydidesUrl(jobName, buildNumber));
+            response = jenkinsClient.getSerenityReport(getSerenityUrl(jobName, buildNumber, reportName));
         } catch (IOException e) {
             Logger.out.error(e);
         }
@@ -83,8 +87,8 @@ public class JenkinsRestHelper {
         return response;
     }
 
-    public String getThucydidesUrl(final String jobName, final int buildNumber) {
-        return getJob(jobName).getBuildByNumber(buildNumber).getUrl() + "thucydidesReport";
+    public String getSerenityUrl(final String jobName, final int buildNumber, final String reportName) {
+        return getJob(jobName).getBuildByNumber(buildNumber).getUrl() + reportName;
     }
 
 }

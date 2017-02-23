@@ -33,6 +33,7 @@ Example of config is attached below:
 			"info": {
 				"name": "<custom thread name>",
 				"jobName": "<job name>",
+				"serenityReportName": "'thucydidesReport' as default",
 				"chatId": "<skype : /get name>"
 			},
 			"defaultParameters": [  //optional

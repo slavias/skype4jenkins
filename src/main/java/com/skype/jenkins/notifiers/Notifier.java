@@ -48,7 +48,7 @@ public abstract class Notifier {
                 jobConfig.getNotifierByType(NotifyTypeEnum.getNotifierByClass(this.getClass()))
                         .getLineFromLog()).map(text -> publishConsole(text)).orElse(""));
         textOutput.append(jobResult.getUrl() + "\n");
-        textOutput.append(getThucydidesReport(jobResult));
+        textOutput.append(getSerenityReport(jobResult));
         return textOutput.toString();
     }
 
@@ -85,10 +85,10 @@ public abstract class Notifier {
         return textOutput;
     }
 
-    private String getThucydidesReport(final BuildWithDetails result) {
+    private String getSerenityReport(final BuildWithDetails result) {
         StringBuilder thucydidesResult = new StringBuilder("");
         if (!result.isBuilding() && (BuildResult.SUCCESS.equals(result.getResult()) || BuildResult.UNSTABLE.equals(result.getResult()))) {
-            String report = JenkinsRestHelper.getInstance(jenkinsUrl).getJenkinsJobThucydides(jobConfig.getInfo().getJobName(), result.getNumber());
+            String report = JenkinsRestHelper.getInstance(jenkinsUrl).getJenkinsJobSerenity(jobConfig.getInfo().getJobName(), result.getNumber(), jobConfig.getInfo().getSerenityReportName());
             if (report.isEmpty()) {
                 return "";
             } else {
@@ -98,8 +98,9 @@ public abstract class Notifier {
             Elements summary = doc.select(".summary-leading-column").get(0).parents();
             thucydidesResult.append("test passed: ").append(summary.select("td").get(2).text()).append("\n");
             thucydidesResult.append("test failed: ").append(summary.select("td").get(3).text()).append("\n");
-            thucydidesResult.append("report Url: ").append(JenkinsRestHelper.getInstance(jenkinsUrl).getThucydidesUrl(jobConfig.getInfo().getJobName(), result.getNumber()))
-                    .append("\n");
+            thucydidesResult.append("report Url: ")
+                    .append(JenkinsRestHelper.getInstance(jenkinsUrl).getSerenityUrl(jobConfig.getInfo().getJobName(),
+                            result.getNumber(), jobConfig.getInfo().getSerenityReportName())).append("\n");
         }
         Logger.out.debug(thucydidesResult);
         return thucydidesResult.toString();
