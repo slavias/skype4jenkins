@@ -51,6 +51,8 @@ public class ConfigJobDTO {
         private String name;
         @SerializedName("jobName")
         private String jobName;
+        @SerializedName("jobView")
+        private String jobView;
         @SerializedName("serenityReportName")
         private String serenityReportName;
         @SerializedName("timeout")
@@ -117,6 +119,15 @@ public class ConfigJobDTO {
         public void setChatId(final String chatId) {
             this.chatId = chatId;
         }
+
+        public String getJobView() {
+            return jobView;
+        }
+
+        public void setJobView(String jobView) {
+            this.jobView = jobView;
+        }
+
     }
 
     public class NotifyDTO {
