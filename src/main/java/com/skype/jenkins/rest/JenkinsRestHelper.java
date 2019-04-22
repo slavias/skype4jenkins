@@ -1,16 +1,16 @@
 package com.skype.jenkins.rest;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
 import com.offbytwo.jenkins.JenkinsServer;
 import com.offbytwo.jenkins.model.BuildWithDetails;
 import com.offbytwo.jenkins.model.JobWithDetails;
+import com.skype.jenkins.RunNotification;
+import com.skype.jenkins.dto.ConfigJobDTO;
 import com.skype.jenkins.logger.Logger;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
 
 public class JenkinsRestHelper {
 
@@ -34,11 +34,25 @@ public class JenkinsRestHelper {
     public synchronized JobWithDetails getJob(final String jobName) {
         JobWithDetails job = null;
         try {
-            job = jenkinsServer.getJob(jobName);
+            job = jenkinsClient.get(String.format("job/%s/api/json/lastBuild", jobName), JobWithDetails.class);
         } catch (IOException e) {
             Logger.out.error(e);
         }
+        Logger.out.debug(jobName + ": Last Job ID: " + job.getLastBuild().getNumber());
         return job;
+    }
+
+    private ConfigJobDTO getConfigurationForJob(JobWithDetails job) {
+        try {
+            String jobHost = new URI(job.getLastBuild().getUrl()).getHost();
+            return RunNotification.getConfiguration().stream()
+                    .filter(file ->
+                            file.getJenkinsUrl().contains(jobHost)).findFirst().get().getJobs().stream()
+                    .filter(j -> j.getInfo().getJobName().equals(job.getName())).findFirst().get();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public synchronized BuildWithDetails getJobInfo(final String jobName) {
@@ -76,7 +90,7 @@ public class JenkinsRestHelper {
     }
 
     public synchronized String getJenkinsJobSerenity(final String jobName, final int buildNumber,
-            final String reportName) {
+                                                     final String reportName) {
         String response = "";
         try {
             response = jenkinsClient.getSerenityReport(getSerenityUrl(jobName, buildNumber, reportName));
