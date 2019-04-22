@@ -2,7 +2,6 @@ package com.skype.jenkins.rest;
 
 import com.offbytwo.jenkins.JenkinsServer;
 import com.offbytwo.jenkins.model.BuildWithDetails;
-import com.offbytwo.jenkins.model.FolderJob;
 import com.offbytwo.jenkins.model.JobWithDetails;
 import com.skype.jenkins.RunNotification;
 import com.skype.jenkins.dto.ConfigJobDTO;
@@ -35,18 +34,11 @@ public class JenkinsRestHelper {
     public synchronized JobWithDetails getJob(final String jobName) {
         JobWithDetails job = null;
         try {
-            JobWithDetails singleJob = jenkinsServer.getJob(jobName);
-            String viewName = getConfigurationForJob(singleJob).getInfo().getJobView();
-            // Jenkins API could return different job values for single job and for same job in view.
-            JobWithDetails jobInView = jenkinsServer.getJob(new FolderJob("", String.format("view/%s/", viewName)), jobName);
-            if (jobInView != null) {
-                job = singleJob.getNextBuildNumber() > jobInView.getNextBuildNumber() ? singleJob : jobInView;
-            } else {
-                job = singleJob;
-            }
+            job = jenkinsClient.get(String.format("job/%s/api/json/lastBuild", jobName), JobWithDetails.class);
         } catch (IOException e) {
             Logger.out.error(e);
         }
+        Logger.out.debug(jobName + ": Last Job ID: " + job.getLastBuild().getNumber());
         return job;
     }
 
